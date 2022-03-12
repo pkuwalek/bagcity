@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model bags {
+  bag_id             Int                  @id @default(autoincrement())
+  bag_name           String               @db.VarChar(256)
+  price              Decimal?             @db.Money
+  brand_id           Int
+  type_id            Int?
+  color_id           Int?
+  brands             brands               @relation(fields: [brand_id], references: [brand_id], onDelete: NoAction, onUpdate: NoAction)
+  colors             colors?              @relation(fields: [color_id], references: [color_id], onDelete: NoAction, onUpdate: NoAction)
+  types              types?               @relation(fields: [type_id], references: [type_id], onDelete: NoAction, onUpdate: NoAction)
+  user_bag_relations user_bag_relations[]
+}
+
+model brands {
+  brand_id   Int     @id @default(autoincrement())
+  brand_name String? @db.VarChar(128)
+  bags       bags[]
+}
+
+model colors {
+  color_id   Int     @id @default(autoincrement())
+  color_name String? @db.VarChar(128)
+  bags       bags[]
+}
+
+model types {
+  type_id   Int     @id @default(autoincrement())
+  type_name String? @db.VarChar(128)
+  bags      bags[]
+}
+
+model user_bag_relations {
+  user_id Int
+  bag_id  Int
+  bags    bags  @relation(fields: [bag_id], references: [bag_id], onDelete: Cascade)
+  users   users @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@id([user_id, bag_id])
+}
+
+model users {
+  user_id            Int                  @id @default(autoincrement())
+  user_name          String               @db.VarChar(128)
+  email              String               @unique @db.VarChar(128)
+  password_hash      String               @db.Char(128)
+  user_bag_relations user_bag_relations[]
+}
