@@ -1,6 +1,9 @@
+/* eslint-disable no-console */
+/* eslint-disable camelcase */
 const express = require('express');
 const bodyParser = require('body-parser');
 const { PrismaClient } = require('@prisma/client');
+
 const prisma = new PrismaClient();
 const app = express();
 
@@ -22,8 +25,8 @@ app.post('/bags', async (req, res) => {
       brands: true,
       colors: true,
       types: true,
-    }
-  })
+    },
+  });
   res.json(result);
 });
 
@@ -37,8 +40,8 @@ app.post('/users/bags', async (req, res) => {
     include: {
       users: true,
       bags: true,
-    }
-  })
+    },
+  });
   res.json(result);
 });
 
@@ -50,11 +53,10 @@ app.get('/users', async (req, res) => {
 app.get('/users/:id', async (req, res) => {
   const { id } = req.params;
 
-  const singleUser = await prisma.users
-    .findUnique({
-      where: { user_id: Number(id) }
-    });
-    res.json(singleUser);
+  const singleUser = await prisma.users.findUnique({
+    where: { user_id: Number(id) },
+  });
+  res.json(singleUser);
 });
 
 app.get('/bags', async (req, res) => {
@@ -64,56 +66,39 @@ app.get('/bags', async (req, res) => {
 
 app.get('/bags/colors/:id', async (req, res) => {
   const { id } = req.params;
-  const bagsOfSpecificColor = await prisma.colors
-    .findUnique({
-      where: { color_id: Number(id) },
-      include: { bags: true }
-  })
+  const bagsOfSpecificColor = await prisma.colors.findUnique({
+    where: { color_id: Number(id) },
+    include: { bags: true },
+  });
   res.json(bagsOfSpecificColor);
 });
 
 app.get('/users/:id/bags', async (req, res) => {
   const { id } = req.params;
-  const usersAllBags = await prisma.user_bag_relations
-    .findMany({
-      where: { user_id: Number(id) },
-      include: { users: true },
-      include: {
-        bags: {
-          include: { colors: true, brands: true, types: true },
-        },
+  const usersAllBags = await prisma.user_bag_relations.findMany({
+    where: { user_id: Number(id) },
+    include: {
+      users: true,
+      bags: {
+        include: { colors: true, brands: true, types: true },
       },
-    })
-    res.json(usersAllBags);
+    },
+  });
+  res.json(usersAllBags);
 });
 
+// TODO: check if it works
 app.get('/users/:id/bag', async (req, res) => {
   const { id } = req.params;
-  const userAndBagData = await prisma.users
-    .findMany({
-      where: {
-        user_id: Number(id),
-        user_bag_relations: {
-          some: { bag_id: true }
-        }
+  const userAndBagData = await prisma.users.findMany({
+    where: {
+      user_id: Number(id),
+      user_bag_relations: {
+        some: { bag_id: true },
       },
-    })
+    },
+  });
+  res.json(userAndBagData);
 });
 
-// async function main() {
-//   // ... you will write your Prisma Client queries here
-//   const allUsers = await prisma.users.findMany()
-//   console.log(allUsers)
-// }
-
-// main()
-//   .catch((e) => {
-//     throw e
-//   })
-//   .finally(async () => {
-//     await prisma.$disconnect()
-//   })
-
-const server = app.listen(3000, () =>
-  console.log('Server is ready - localhost:3000')
-);
+app.listen(3000, () => console.log('Server is ready - localhost:3000'));

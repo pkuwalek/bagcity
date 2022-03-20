@@ -1,3 +1,9 @@
+# Dependencies
 node_modules
-# Keep environment variables out of version control
-.env
+
+# Environment varibales
+.env*
+!.env*.example
+
+# Code coverage
+coverage

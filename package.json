@@ -11,6 +11,15 @@
     "sequelize": "^6.15.0"
   },
   "devDependencies": {
+    "eslint": "^8.11.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jest": "^26.1.2",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-security": "^1.4.0",
+    "jest": "^27.5.1",
+    "prettier": "^2.6.0",
     "prisma": "^3.10.0"
   }
 }
