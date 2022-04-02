@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable camelcase */
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const { PrismaClient } = require('@prisma/client');
 
@@ -10,6 +11,8 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.json());
+
+app.use(cors());
 
 app.post('/bags', async (req, res) => {
   const { bag_name, price, brand_id, type_id, color_id } = req.body;
@@ -60,6 +63,7 @@ app.get('/users/:id', async (req, res) => {
 });
 
 app.get('/bags', async (req, res) => {
+  console.log('Bags Called');
   const bags = await prisma.bags.findMany();
   res.json(bags);
 });
