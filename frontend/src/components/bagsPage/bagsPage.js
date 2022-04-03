@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { getAllBags } from '../../sources/bags';
+import BagCard from '../BagCard/BagCard';
 
 const BagsPage = () => {
-  const [allBags, setAllBags] = useState('');
+  const [allBags, setAllBags] = useState([]);
 
   useEffect(() => {
     getAllBags()
@@ -16,13 +17,12 @@ const BagsPage = () => {
     <h1>Bags:</h1>
         <div>
             <div>
+              {/* <p>{allBags && JSON.stringify(allBags, null, 4)}</p> */}
               <p>Name</p>
-              <p>{allBags && JSON.stringify(allBags, null, 4)}</p>
-              {/* <p>{getAllBags.map(response => <li key={response.bag_id}>{response.bag_name}</li>)}</p> */}
+              {/* <p>{allBags.map(response => <li key={response.bag_id}>{response.bag_name}</li>)}</p> */}
             </div>
             <div>
-              <p>Id</p>
-              {/* <p>{getAllBags.bag_id}</p> */}
+              <span>{allBags.map(response => <BagCard key={response.bag_id} bags={response} />)}</span>
             </div>
         </div>
     </>

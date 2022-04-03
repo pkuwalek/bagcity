@@ -63,8 +63,9 @@ app.get('/users/:id', async (req, res) => {
 });
 
 app.get('/bags', async (req, res) => {
-  console.log('Bags Called');
-  const bags = await prisma.bags.findMany();
+  const bags = await prisma.bags.findMany({
+    include: { colors: true, brands: true, types: true },
+  });
   res.json(bags);
 });
 
