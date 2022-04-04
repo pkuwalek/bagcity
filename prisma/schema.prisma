@@ -11,6 +11,8 @@ model bags {
   bag_id             Int                  @id @default(autoincrement())
   bag_name           String               @db.VarChar(256)
   price              Decimal?             @db.Money
+  photo_url          String               @db.VarChar(1024)
+  description         String               @db.VarChar(4096)
   brand_id           Int
   type_id            Int?
   color_id           Int?
