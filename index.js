@@ -78,6 +78,15 @@ app.get('/bags/colors/:id', async (req, res) => {
   res.json(bagsOfSpecificColor);
 });
 
+app.get('/bags/:id', async (req, res) => {
+  const { id } = req.params;
+  const bagById = await prisma.bags.findUnique({
+    where: { bag_id: Number(id) },
+    include: { colors: true, brands: true, types: true },
+  });
+  res.json(bagById);
+});
+
 app.get('/users/:id/bags', async (req, res) => {
   const { id } = req.params;
   const usersAllBags = await prisma.user_bag_relations.findMany({
