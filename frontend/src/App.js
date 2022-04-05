@@ -1,5 +1,6 @@
 import './App.scss';
 import BagsPage from './components/bagsPage/bagsPage';
+import BagPage from './components/bagPage/bagPage';
 import {
   BrowserRouter,
   Switch,
@@ -15,6 +16,10 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/bags" element={<BagsPage />}>
+            </Route>
+          </Routes>
+          <Routes>
+            <Route path="/bag/:id" element={<BagPage />}>
             </Route>
           </Routes>
         </BrowserRouter>
