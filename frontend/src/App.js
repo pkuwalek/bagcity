@@ -11,16 +11,12 @@ import {
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
+    <div className='App'>
+      <header className='App-header'>
         <BrowserRouter>
           <Routes>
-            <Route path="/bags" element={<BagsPage />}>
-            </Route>
-          </Routes>
-          <Routes>
-            <Route path="/bag/:id" element={<BagPage />}>
-            </Route>
+            <Route path='/bags' element={<BagsPage />}></Route>
+            <Route path='/bags/:id' element={<BagPage />}></Route>
           </Routes>
         </BrowserRouter>
       </header>

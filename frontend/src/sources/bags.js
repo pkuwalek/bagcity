@@ -6,3 +6,9 @@ export const getAllBags = () => {
         method: 'GET'
     });
 };
+
+export const getBagById = (id) => {
+    return fetch (`${urlBags}${id}`, {
+        method: 'GET'
+    });
+};
