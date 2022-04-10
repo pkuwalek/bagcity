@@ -3,10 +3,8 @@ import BagsPage from './components/bagsPage/bagsPage';
 import BagPage from './components/bagPage/bagPage';
 import {
   BrowserRouter,
-  Switch,
   Route,
-  Routes,
-  Redirect
+  Routes
 } from 'react-router-dom';
 
 function App() {

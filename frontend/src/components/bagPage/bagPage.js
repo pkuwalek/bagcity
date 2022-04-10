@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getBagById } from '../../sources/bags';
+import './bagPage.scss';
 
 const BagPage = () => {
   let { id } = useParams();
@@ -17,15 +18,20 @@ const BagPage = () => {
     <>
     <h1>The Bag:</h1>
         <div>
-            <div>
-              {/* <p>{allBags && JSON.stringify(allBags, null, 4)}</p> */}
-              <p>and id is: { id } </p>
-              {/* <p>{allBags.map(response => <li key={response.bag_id}>{response.bag_name}</li>)}</p> */}
-            </div>
-            <div>
-              <p>{singleBag && JSON.stringify(singleBag, null, 4)}</p>
-              {/* <span>{singleBag.map(response => <li key={response.bag_id}>{response.bag_name}</li>)}</span> */}
-            </div>
+          <h2>Bag name:</h2>
+          <p>{singleBag.bag_name}</p>
+          <h2>Brand:</h2>
+          <p>{singleBag.brands.brand_name}</p>
+          <h2>Price:</h2>
+          <p>{singleBag.price}</p>
+          <h2>Photo:</h2>
+          <img src={singleBag.photo_url} alt='bag'></img>
+          <h2>Color:</h2>
+          <p>{singleBag.colors.color_name}</p>
+          <h2>Type:</h2>
+          <p>{singleBag.types.type_name}</p>
+          <h2>Description:</h2>
+          <p>{singleBag.description}</p>
         </div>
     </>
     )
