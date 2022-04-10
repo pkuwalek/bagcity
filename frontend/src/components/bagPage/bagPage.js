@@ -5,7 +5,7 @@ import './bagPage.scss';
 
 const BagPage = () => {
   let { id } = useParams();
-  const [singleBag, setSingleBag] = useState([]);
+  const [singleBag, setSingleBag] = useState({brands: {}, colors: {}, types: {}});
 
   useEffect(() => {
     getBagById(id)
