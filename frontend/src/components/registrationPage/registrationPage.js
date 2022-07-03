@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import './registrationPage.scss';
+import { createUser } from '../../sources/users';
 
 const RegistrationPage = () => {
 
@@ -25,7 +26,7 @@ const RegistrationPage = () => {
                 .min(8, 'Password should be 8 chars minimum'),
         }),
         onSubmit: values => {
-            alert(JSON.stringify(values, null, 2));
+            alert(createUser(values));
         },
     });
  

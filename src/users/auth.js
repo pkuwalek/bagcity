@@ -14,7 +14,7 @@ passport.use(
 
     if (!user) return done(response);
     if (user) {
-      const passwordMatch = await argon2.verify(user.password_hash, password); //argon2 ma rację hash jest niepoprawny, ponieważ dostaje ciąg z wieloma znakami pustymi na końcu.
+      const passwordMatch = await argon2.verify(user.password_hash, password); // argon2 ma rację hash jest niepoprawny, ponieważ dostaje ciąg z wieloma znakami pustymi na końcu.
       if (passwordMatch) return done(null, user);
       return done(response);
     }
@@ -22,7 +22,7 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  done(null, user.user_id); //Faktycznie zaczeło działać po zmianie z id na user_id. 
+  done(null, user.user_id); // Faktycznie zaczeło działać po zmianie z id na user_id.
 });
 
 passport.deserializeUser(async (id, done) => {
@@ -36,13 +36,13 @@ router.post('/register', async (req, res) => {
   await prisma.users
     .create({
       data: {
-        user_name: req.body.user_name,
-        email: req.body.email,
-        password_hash: await argon2.hash(req.body.password),
+        user_name: req.body.user.name,
+        email: req.body.user.email,
+        password_hash: await argon2.hash(req.body.user.password),
       },
     })
     .then((user) => {
-      res.redirect('/auth/login');
+      res.status(200).json('User created succesfully.');
       // coś innego na frontend wysłać, np.okejkę, a po loginie ciasteczko
     })
     .catch(() => res.status(400).json('Unable to add user.'));
