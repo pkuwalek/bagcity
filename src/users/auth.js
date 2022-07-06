@@ -36,9 +36,9 @@ router.post('/register', async (req, res) => {
   await prisma.users
     .create({
       data: {
-        user_name: req.body.user.name,
-        email: req.body.user.email,
-        password_hash: await argon2.hash(req.body.user.password),
+        user_name: req.body.name,
+        email: req.body.email,
+        password_hash: await argon2.hash(req.body.password),
       },
     })
     .then((user) => {
@@ -48,6 +48,6 @@ router.post('/register', async (req, res) => {
     .catch(() => res.status(400).json('Unable to add user.'));
 });
 
-router.post('/login', passport.authenticate('local', { failureRedirect: '/auth/login', successRedirect: '/users' }));
+router.post('/login', passport.authenticate('local', { failureRedirect: '/user/login', successRedirect: '/bags' }));
 
 module.exports = router;
