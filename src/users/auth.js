@@ -1,6 +1,8 @@
 const express = require('express');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const JwtStrategy = require('passport-jwt').Strategy;
+const { ExtractJwt } = require('passport-jwt');
 const argon2 = require('argon2');
 const { PrismaClient } = require('@prisma/client');
 
@@ -31,6 +33,22 @@ passport.deserializeUser(async (id, done) => {
 
   return done(null, user);
 });
+
+const opts = {};
+opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.secretOrKey = process.env.JWT_SECRET;
+
+passport.use(
+  new JwtStrategy(opts, async (jwt_payload, done) => {
+    // Check against the DB only if necessary.
+    const user = await prisma.user.findUnique({ where: { user_id: Number(jwt_payload._id) } });
+    if (user) {
+      return done(null, user);
+    }
+    return done(null, false);
+    // or you could create a new account
+  })
+);
 
 router.post('/register', async (req, res) => {
   await prisma.users
