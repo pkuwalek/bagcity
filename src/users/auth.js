@@ -3,8 +3,11 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const JwtStrategy = require('passport-jwt').Strategy;
 const { ExtractJwt } = require('passport-jwt');
+const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
 const { PrismaClient } = require('@prisma/client');
+
+const dev = process.env.NODE_ENV !== 'production';
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -23,8 +26,9 @@ passport.use(
   })
 );
 
+// zwraca user_id
 passport.serializeUser((user, done) => {
-  done(null, user.user_id); // Faktycznie zaczeło działać po zmianie z id na user_id.
+  done(null, user.user_id);
 });
 
 passport.deserializeUser(async (id, done) => {
@@ -41,7 +45,7 @@ opts.secretOrKey = process.env.JWT_SECRET;
 passport.use(
   new JwtStrategy(opts, async (jwt_payload, done) => {
     // Check against the DB only if necessary.
-    const user = await prisma.user.findUnique({ where: { user_id: Number(jwt_payload._id) } });
+    const user = await prisma.user.findUnique({ where: { user_id: Number(jwt_payload.user_id) } });
     if (user) {
       return done(null, user);
     }
@@ -49,6 +53,30 @@ passport.use(
     // or you could create a new account
   })
 );
+
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  // Since localhost is not having https protocol,
+  // secure cookies do not work correctly (in postman)
+  secure: !dev,
+  signed: true,
+  maxAge: eval(process.env.REFRESH_TOKEN_EXPIRY) * 1000,
+  sameSite: 'none',
+};
+
+const getToken = (user) => {
+  return jwt.sign(user, process.env.JWT_SECRET, {
+    expiresIn: eval(process.env.SESSION_EXPIRY),
+  });
+};
+
+const getRefreshToken = (user) => {
+  return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: eval(process.env.REFRESH_TOKEN_EXPIRY),
+  });
+};
+
+const verifyUser = passport.authenticate('jwt', { session: false });
 
 router.post('/register', async (req, res) => {
   await prisma.users
@@ -59,13 +87,28 @@ router.post('/register', async (req, res) => {
         password_hash: await argon2.hash(req.body.password),
       },
     })
-    .then((user) => {
+    .then(() => {
       res.status(200).json('User created succesfully.');
-      // coś innego na frontend wysłać, np.okejkę, a po loginie ciasteczko
     })
     .catch(() => res.status(400).json('Unable to add user.'));
 });
 
-router.post('/login', passport.authenticate('local', { failureRedirect: '/user/login', successRedirect: '/bags' }));
+router.post('/login', passport.authenticate('local'), async (req, res) => {
+  const token = getToken({ user_id: req.user.user_id });
+  const refreshToken = getRefreshToken({ user_id: req.user.user_id });
+  const user = await prisma.users.findUnique({
+    where: { user_id: Number(req.user.user_id) },
+  });
+  await prisma.users
+    .update({
+      where: { user_id: Number(user.user_id) },
+      data: { refresh_token: { push: refreshToken } },
+    })
+    .then(() => {
+      res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
+      res.send({ success: true, token });
+    })
+    .catch((err) => res.status(400).send(err));
+});
 
 module.exports = router;

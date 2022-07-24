@@ -12,7 +12,7 @@ model bags {
   bag_name           String               @db.VarChar(256)
   price              Decimal?             @db.Money
   photo_url          String               @db.VarChar(1024)
-  description         String               @db.VarChar(4096)
+  description        String               @db.VarChar(4096)
   brand_id           Int
   type_id            Int?
   color_id           Int?
@@ -54,5 +54,6 @@ model users {
   user_name          String               @db.VarChar(128)
   email              String               @unique @db.VarChar(128)
   password_hash      String               @db.VarChar(128)
+  refresh_token      String[]
   user_bag_relations user_bag_relations[]
 }
