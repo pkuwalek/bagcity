@@ -1,6 +1,6 @@
 const express = require('express');
+const { PrismaClient } = require('@prisma/client');
 const {
-  prisma,
   getToken,
   getRefreshToken,
   COOKIE_OPTIONS,
@@ -9,6 +9,8 @@ const {
   authenticateUser,
   verifyRefreshToken,
 } = require('./authController');
+
+const prisma = new PrismaClient();
 
 const router = express.Router();
 
@@ -106,24 +108,32 @@ router.get('/logout', verifyUser, (req, res, next) => {
   const { refreshToken } = signedCookies;
   findUserById(req.user.user_id).then(
     (user) => {
-      const tokenIndex = user.refreshToken.findIndex((item) => item.refreshToken === refreshToken);
+      const tokenIndex = user.refreshToken.findIndex((item) => item === refreshToken);
 
       if (tokenIndex !== -1) {
-        user.refreshToken.id(user.refreshToken[tokenIndex]._id).remove();
+        user.refreshToken.id(user.refreshToken[tokenIndex]).remove();
+        const leftoverTokens = user.refreshToken.filter((token) => token !== refreshToken);
+        prisma.users
+          .update({
+            where: { user_id: Number(user.user_id) },
+            data: { refresh_token: { set: leftoverTokens } },
+          })
+          .then(() => {
+            res.clearCookie('refreshToken', COOKIE_OPTIONS);
+            res.send({ success: true });
+          })
+          .catch((err) => {
+            res.statusCode = 500;
+            res.send(err);
+          });
       }
-
-      user.save((err, user) => {
-        if (err) {
-          res.statusCode = 500;
-          res.send(err);
-        } else {
-          res.clearCookie('refreshToken', COOKIE_OPTIONS);
-          res.send({ success: true });
-        }
-      });
     },
     (err) => next(err)
   );
+});
+
+router.get('/me', verifyUser, (req, res) => {
+  res.send("I'ts me :)");
 });
 
 module.exports = router;

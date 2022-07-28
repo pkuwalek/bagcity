@@ -5,8 +5,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const bags = require('./src/bags/bags');
-const users = require('./src/users/users');
-const auth = require('./src/users/auth');
+const users = require('./src/users/usersRoutes');
+const auth = require('./src/users/authRoutes');
 
 const app = express();
 

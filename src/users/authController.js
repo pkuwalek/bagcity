@@ -25,6 +25,9 @@ passport.use(
   })
 );
 
+const authenticateUser = passport.authenticate('local');
+exports.authenticateUser = authenticateUser;
+
 const hashPassword = async (userPassword) => {
   await argon2.hash(userPassword);
 };
@@ -58,36 +61,33 @@ passport.use(
   })
 );
 
+const verifyUser = passport.authenticate('jwt', { session: false });
+exports.verifyUser = verifyUser;
+
 const COOKIE_OPTIONS = {
   httpOnly: true,
   // Since localhost is not having https protocol,
   // secure cookies do not work correctly (in postman)
   secure: !dev,
   signed: true,
-  maxAge: eval(process.env.REFRESH_TOKEN_EXPIRY) * 1000,
+  maxAge: process.env.REFRESH_TOKEN_EXPIRY * 1000,
   sameSite: 'none',
 };
 exports.COOKIE_OPTIONS = COOKIE_OPTIONS;
 
 const getToken = (user) => {
   return jwt.sign(user, process.env.JWT_SECRET, {
-    expiresIn: eval(process.env.SESSION_EXPIRY),
+    expiresIn: process.env.SESSION_EXPIRY,
   });
 };
 
 exports.getToken = getToken;
 const getRefreshToken = (user) => {
   return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, {
-    expiresIn: eval(process.env.REFRESH_TOKEN_EXPIRY),
+    expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
   });
 };
 exports.getRefreshToken = getRefreshToken;
 
 const verifyRefreshToken = (refreshToken) => jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 exports.verifyRefreshToken = verifyRefreshToken;
-
-const verifyUser = passport.authenticate('jwt', { session: false });
-exports.verifyUser = verifyUser;
-
-const authenticateUser = passport.authenticate('local');
-exports.authenticateUser = authenticateUser;
