@@ -9,6 +9,7 @@ const users = require('./src/users/usersRoutes');
 const auth = require('./src/users/authRoutes');
 
 const app = express();
+app.use(express.json());
 
 if (process.env.NODE_ENV !== 'production') {
   // Load environment variables from .env file in non prod environments
@@ -18,8 +19,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-
-app.use(express.json());
 
 // const whitelist = process.env.WHITELISTED_DOMAINS ? process.env.WHITELISTED_DOMAINS.split(',') : [];
 

@@ -19,7 +19,6 @@ const findUserById = async (id) => {
     where: { user_id: Number(id) },
   });
 };
-exports.findUserById = findUserById;
 
 router.post('/register', async (req, res) => {
   await prisma.users
@@ -48,7 +47,9 @@ router.post('/login', authenticateUser, async (req, res) => {
       res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
       res.send({ success: true, token });
     })
-    .catch((err) => res.status(400).send(err));
+    .catch((err) => {
+      res.status(401).send(err);
+    });
 });
 
 router.post('/refreshToken', async (req, res, next) => {
@@ -108,11 +109,10 @@ router.get('/logout', verifyUser, (req, res, next) => {
   const { refreshToken } = signedCookies;
   findUserById(req.user.user_id).then(
     (user) => {
-      const tokenIndex = user.refreshToken.findIndex((item) => item === refreshToken);
+      const tokenIndex = user.refresh_token.findIndex((item) => item === refreshToken);
 
       if (tokenIndex !== -1) {
-        user.refreshToken.id(user.refreshToken[tokenIndex]).remove();
-        const leftoverTokens = user.refreshToken.filter((token) => token !== refreshToken);
+        const leftoverTokens = user.refresh_token.filter((token) => token !== refreshToken);
         prisma.users
           .update({
             where: { user_id: Number(user.user_id) },
@@ -133,7 +133,7 @@ router.get('/logout', verifyUser, (req, res, next) => {
 });
 
 router.get('/me', verifyUser, (req, res) => {
-  res.send("I'ts me :)");
+  res.send("It's me :)");
 });
 
 module.exports = router;

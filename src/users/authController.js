@@ -5,11 +5,16 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
 const { PrismaClient } = require('@prisma/client');
-const { findUserById } = require('./authRoutes');
 
 const dev = process.env.NODE_ENV !== 'production';
 
 const prisma = new PrismaClient();
+
+const findUserById = async (id) => {
+  return prisma.users.findUnique({
+    where: { user_id: Number(id) },
+  });
+};
 
 passport.use(
   new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
@@ -25,11 +30,11 @@ passport.use(
   })
 );
 
-const authenticateUser = passport.authenticate('local');
+const authenticateUser = passport.authenticate('local', { session: false });
 exports.authenticateUser = authenticateUser;
 
-const hashPassword = async (userPassword) => {
-  await argon2.hash(userPassword);
+const hashPassword = (userPassword) => {
+  return argon2.hash(userPassword);
 };
 exports.hashPassword = hashPassword;
 
@@ -70,7 +75,7 @@ const COOKIE_OPTIONS = {
   // secure cookies do not work correctly (in postman)
   secure: !dev,
   signed: true,
-  maxAge: process.env.REFRESH_TOKEN_EXPIRY * 1000,
+  maxAge: 1000 * 60 * 60 * 24 * 30,
   sameSite: 'none',
 };
 exports.COOKIE_OPTIONS = COOKIE_OPTIONS;
