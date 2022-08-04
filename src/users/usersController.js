@@ -1,0 +1,86 @@
+const { PrismaClient } = require('@prisma/client');
+const argon2 = require('argon2');
+
+const prisma = new PrismaClient();
+
+const findUserById = async (id) => {
+  return prisma.users.findUnique({
+    where: { user_id: Number(id) },
+    select: {
+      user_id: true,
+      user_name: true,
+      email: true,
+    },
+  });
+};
+exports.findUserById = findUserById;
+
+const getUsersRefreshToken = async (id) => {
+  return prisma.users.findUnique({
+    where: { user_id: Number(id) },
+    select: { refresh_token: true },
+  });
+};
+exports.getUsersRefreshToken = getUsersRefreshToken;
+
+const hashPassword = (userPassword) => {
+  return argon2.hash(userPassword);
+};
+
+const createUser = async (params) => {
+  const { name, email, password } = params;
+  return prisma.users
+    .create({
+      data: {
+        user_name: name,
+        email,
+        password_hash: await hashPassword(password),
+      },
+    })
+    .then(() => true)
+    .catch(() => false);
+};
+exports.createUser = createUser;
+
+const pushNewRefreshToken = async (id, refreshToken) => {
+  await prisma.users.update({
+    where: { user_id: Number(id) },
+    data: { refresh_token: { push: refreshToken } },
+  });
+};
+exports.pushNewRefreshToken = pushNewRefreshToken;
+
+const setRefreshedTokens = async (id, refreshedTokens) => {
+  await prisma.users.update({
+    where: { user_id: Number(id) },
+    data: { refresh_token: { set: refreshedTokens } },
+  });
+};
+exports.setRefreshedTokens = setRefreshedTokens;
+
+const findUsersBags = async (id) => {
+  return prisma.user_bag_relations.findMany({
+    where: { user_id: Number(id) },
+    include: {
+      users: true,
+      bags: {
+        include: { colors: true, brands: true, types: true },
+      },
+    },
+  });
+};
+exports.findUsersBags = findUsersBags;
+
+const addBagToUser = async (user_id, bag_id) => {
+  return prisma.user_bag_relations.create({
+    data: {
+      users: { connect: { user_id: Number(user_id) } },
+      bags: { connect: { bag_id: Number(bag_id) } },
+    },
+    include: {
+      users: true,
+      bags: true,
+    },
+  });
+};
+exports.addBagToUser = addBagToUser;

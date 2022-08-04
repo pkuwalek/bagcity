@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const bags = require('./src/bags/bags');
 const users = require('./src/users/usersRoutes');
 const auth = require('./src/users/authRoutes');
+const { verifyUser } = require('./src/users/authController');
 
 const app = express();
 app.use(express.json());
@@ -36,7 +37,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(cors());
 
 app.use('/bags', bags);
-app.use('/users', users);
+app.use('/users', verifyUser, users);
 app.use('/auth', auth);
 
 app.listen(3000, () => console.log('Server is ready - localhost:3000'));

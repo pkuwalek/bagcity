@@ -1,63 +1,45 @@
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
+const { findUserById, findUsersBags, addBagToUser } = require('./usersController');
 
 const router = express.Router();
-const prisma = new PrismaClient();
-
-router.get('/', async (req, res) => {
-  const users = await prisma.users.findMany();
-  res.json(users);
-});
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
-
-  const singleUser = await prisma.users.findUnique({
-    where: { user_id: Number(id) },
-  });
-  res.json(singleUser);
+  findUserById(id)
+    .then((user) => {
+      if (user) {
+        res.status(200).send(user);
+      } else {
+        res.status(404).send('No user found');
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
 });
 
-router.get('/:id/bags', async (req, res) => {
+router.get('/:id/bags', (req, res) => {
   const { id } = req.params;
-  const usersAllBags = await prisma.user_bag_relations.findMany({
-    where: { user_id: Number(id) },
-    include: {
-      users: true,
-      bags: {
-        include: { colors: true, brands: true, types: true },
-      },
-    },
-  });
-  res.json(usersAllBags);
+  findUsersBags(id)
+    .then((bags) => {
+      res.status(200).send(bags);
+    })
+    .catch(() => {
+      res.status(500).send('Unable to get bags.');
+    });
 });
 
-// TODO: check if it works
-router.get('/:id/bag', async (req, res) => {
-  const { id } = req.params;
-  const userAndBagData = await prisma.users.findMany({
-    where: {
-      user_id: Number(id),
-      user_bag_relations: {
-        some: { bag_id: true },
-      },
-    },
-  });
-  res.json(userAndBagData);
-});
-
-router.post('/bags', async (req, res) => {
-  const { user_id, bag_id } = req.body;
-  const result = await prisma.user_bag_relations.create({
-    data: {
-      users: { connect: { user_id: Number(user_id) } },
-      bags: { connect: { bag_id: Number(bag_id) } },
-    },
-    include: {
-      users: true,
-      bags: true,
-    },
-  });
+// SPRAWDZIĆ, BO COŚ NIE GRA
+router.post('/bags', (req, res) => {
+  const { user_id } = req.user;
+  const { bag_id } = req.body;
+  const result = addBagToUser(user_id, bag_id)
+    .then(() => {
+      res.status(200).send({ success: true });
+    })
+    .catch(() => {
+      res.status(500).send('Unable to add bag.');
+    });
   res.json(result);
 });
 

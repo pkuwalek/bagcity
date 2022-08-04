@@ -5,16 +5,11 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
 const { PrismaClient } = require('@prisma/client');
+const { findUserById } = require('./usersController');
 
 const dev = process.env.NODE_ENV !== 'production';
 
 const prisma = new PrismaClient();
-
-const findUserById = async (id) => {
-  return prisma.users.findUnique({
-    where: { user_id: Number(id) },
-  });
-};
 
 passport.use(
   new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
@@ -32,11 +27,6 @@ passport.use(
 
 const authenticateUser = passport.authenticate('local', { session: false });
 exports.authenticateUser = authenticateUser;
-
-const hashPassword = (userPassword) => {
-  return argon2.hash(userPassword);
-};
-exports.hashPassword = hashPassword;
 
 // zwraca user_id
 passport.serializeUser((user, done) => {

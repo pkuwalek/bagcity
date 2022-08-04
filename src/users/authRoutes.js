@@ -1,48 +1,32 @@
 const express = require('express');
-const { PrismaClient } = require('@prisma/client');
+const { pushNewRefreshToken, setRefreshedTokens, createUser, getUsersRefreshToken } = require('./usersController');
 const {
   getToken,
   getRefreshToken,
   COOKIE_OPTIONS,
   verifyUser,
-  hashPassword,
   authenticateUser,
   verifyRefreshToken,
 } = require('./authController');
 
-const prisma = new PrismaClient();
-
 const router = express.Router();
 
-const findUserById = async (id) => {
-  return prisma.users.findUnique({
-    where: { user_id: Number(id) },
-  });
-};
-
 router.post('/register', async (req, res) => {
-  await prisma.users
-    .create({
-      data: {
-        user_name: req.body.name,
-        email: req.body.email,
-        password_hash: await hashPassword(req.body.password),
-      },
+  createUser(req.body)
+    .then((success) => {
+      if (success) {
+        res.status(200).json('User created succesfully.');
+      } else {
+        res.status(409).json('User not added.');
+      }
     })
-    .then(() => {
-      res.status(200).json('User created succesfully.');
-    })
-    .catch(() => res.status(400).json('Unable to add user.'));
+    .catch(() => res.status(500).json('Unable to add user.'));
 });
 
 router.post('/login', authenticateUser, async (req, res) => {
   const token = getToken({ user_id: req.user.user_id });
   const refreshToken = getRefreshToken({ user_id: req.user.user_id });
-  await prisma.users
-    .update({
-      where: { user_id: Number(req.user.user_id) },
-      data: { refresh_token: { push: refreshToken } },
-    })
+  pushNewRefreshToken(req.user.user_id, refreshToken)
     .then(() => {
       res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
       res.send({ success: true, token });
@@ -60,7 +44,7 @@ router.post('/refreshToken', async (req, res, next) => {
     try {
       const payload = verifyRefreshToken(refreshToken);
       const { user_id } = payload;
-      findUserById(user_id).then(
+      getUsersRefreshToken(user_id).then(
         (user) => {
           if (user) {
             // Find the refresh token against the user record in database
@@ -73,11 +57,7 @@ router.post('/refreshToken', async (req, res, next) => {
               // If the refresh token exists, then create new one and replace it.
               const refreshedTokens = user.refresh_token;
               refreshedTokens[tokenIndex] = getRefreshToken({ user_id });
-              prisma.users
-                .update({
-                  where: { user_id: Number(user_id) },
-                  data: { refresh_token: { set: refreshedTokens } },
-                })
+              setRefreshedTokens(user_id, refreshedTokens)
                 .then(() => {
                   res.cookie('refreshToken', refreshedTokens[tokenIndex], COOKIE_OPTIONS);
                   res.send({ success: true, token });
@@ -107,17 +87,13 @@ router.post('/refreshToken', async (req, res, next) => {
 router.get('/logout', verifyUser, (req, res, next) => {
   const { signedCookies = {} } = req;
   const { refreshToken } = signedCookies;
-  findUserById(req.user.user_id).then(
+  getUsersRefreshToken(req.user.user_id).then(
     (user) => {
       const tokenIndex = user.refresh_token.findIndex((item) => item === refreshToken);
 
       if (tokenIndex !== -1) {
         const leftoverTokens = user.refresh_token.filter((token) => token !== refreshToken);
-        prisma.users
-          .update({
-            where: { user_id: Number(user.user_id) },
-            data: { refresh_token: { set: leftoverTokens } },
-          })
+        setRefreshedTokens(user.user_id, leftoverTokens)
           .then(() => {
             res.clearCookie('refreshToken', COOKIE_OPTIONS);
             res.send({ success: true });
@@ -126,6 +102,9 @@ router.get('/logout', verifyUser, (req, res, next) => {
             res.statusCode = 500;
             res.send(err);
           });
+      } else {
+        res.clearCookie('refreshToken', COOKIE_OPTIONS);
+        res.status(500).send('Token not found.');
       }
     },
     (err) => next(err)
@@ -133,7 +112,7 @@ router.get('/logout', verifyUser, (req, res, next) => {
 });
 
 router.get('/me', verifyUser, (req, res) => {
-  res.send("It's me :)");
+  res.send(req.user);
 });
 
 module.exports = router;
