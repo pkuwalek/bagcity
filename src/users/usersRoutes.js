@@ -29,18 +29,16 @@ router.get('/:id/bags', (req, res) => {
     });
 });
 
-// SPRAWDZIĆ, BO COŚ NIE GRA
 router.post('/bags', (req, res) => {
   const { user_id } = req.user;
   const { bag_id } = req.body;
-  const result = addBagToUser(user_id, bag_id)
+  addBagToUser(user_id, bag_id)
     .then(() => {
       res.status(200).send({ success: true });
     })
     .catch(() => {
       res.status(500).send('Unable to add bag.');
     });
-  res.json(result);
 });
 
 module.exports = router;
