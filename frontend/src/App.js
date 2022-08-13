@@ -1,4 +1,5 @@
 import './App.scss';
+import Navbar from './components/Navbar/Navbar';
 import BagsPage from './components/bagsPage/bagsPage';
 import BagPage from './components/bagPage/bagPage';
 import LoginPage from './components/loginPage/loginPage';
@@ -11,8 +12,9 @@ import {
 
 function App() {
   return (
-    <div className='App'>
-      <header className='App-header'>
+    <div>
+      <header>
+        <Navbar />
         <BrowserRouter>
           <Routes>
             <Route path='/bags' element={<BagsPage />}></Route>

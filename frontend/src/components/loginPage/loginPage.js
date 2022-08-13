@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Button from 'react-bootstrap/Button';
@@ -6,8 +6,14 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import './loginPage.scss';
 import { authenticateUser } from '../../sources/users';
+import { UserContext } from '../../context/userContext';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
 const LoginPage = () => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState('');
+    const [userContext, setUserContext] = useContext(UserContext);
+
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -21,16 +27,35 @@ const LoginPage = () => {
                 .required('Required')
                 .min(8, 'Your password should be 8 chars minimum'),
         }),
-        onSubmit: values => {
-            alert(authenticateUser(values));
+        onSubmit: (values) => {
+            setIsSubmitting(true);
+            setError('');
+            const basicErrorMessage = 'Something went wrong, please try again later.';
+            authenticateUser(values).then(async response => {
+                setIsSubmitting(false);
+                if (!response.ok) {
+                    alert("invalid creds");
+                    setError('Invalid email or password.');
+                } else {
+                    alert("hurray");
+                    const data = await response.json();
+                    setUserContext(oldValues => {
+                        return { ...oldValues, token: data.token };
+                    })
+                }
+            }).catch(error => {
+                setIsSubmitting(false);
+                setError(basicErrorMessage);
+            })
         },
     });
  
     return (
     <>
+    { error !== '' ? <ErrorAlert error={error} /> : '' }
     <h2>Login</h2>
     <Form onSubmit={formik.handleSubmit}>
-        <FloatingLabel controlId="floatingInput" label="Email address" className="mb-3">
+        <FloatingLabel label="Email address" className="mb-3"> 
             <Form.Control
             id="email"
             type="email"
@@ -40,7 +65,7 @@ const LoginPage = () => {
         {formik.touched.email && formik.errors.email ? (<div>{formik.errors.email}</div>
         ) : null}
         </FloatingLabel>
-        <FloatingLabel controlId="floatingPassword" label="Password" className="mb-3">
+        <FloatingLabel label="Password" className="mb-3">
             <Form.Control
             id="password"
             type="password"
@@ -54,6 +79,7 @@ const LoginPage = () => {
             Submit
         </Button>
     </Form>
+    
     </>
     )
 };
