@@ -1,5 +1,7 @@
 import './App.scss';
 import Navbar from './components/Navbar/Navbar';
+import HomePage from './components/homePage/homePage';
+import UsersPage from './components/usersPage/usersPage';
 import BagsPage from './components/bagsPage/bagsPage';
 import BagPage from './components/bagPage/bagPage';
 import LoginPage from './components/loginPage/loginPage';
@@ -17,6 +19,8 @@ function App() {
         <Navbar />
         <BrowserRouter>
           <Routes>
+            <Route path='/' element={<HomePage />}></Route>
+            <Route path='/me' element={<UsersPage />}></Route>
             <Route path='/bags' element={<BagsPage />}></Route>
             <Route path='/bags/:id' element={<BagPage />}></Route>
             <Route path='/login' element={<LoginPage />}></Route>
