@@ -18,3 +18,12 @@ export const authenticateUser = (data) => {
     });
     return response;
 };
+
+export const verifyUser = () => {
+    const response = fetch (`${urlAuth}refreshToken`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+    });
+    return response;
+};
