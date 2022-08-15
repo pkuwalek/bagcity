@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Button from 'react-bootstrap/Button';
@@ -6,8 +6,13 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import './registrationPage.scss';
 import { createUser } from '../../sources/users';
+import { UserContext } from '../../context/userContext';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
 const RegistrationPage = () => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState('');
+    const [userContext, setUserContext] = useContext(UserContext);
 
     const formik = useFormik({
         initialValues: {
@@ -26,12 +31,31 @@ const RegistrationPage = () => {
                 .min(8, 'Password should be 8 chars minimum'),
         }),
         onSubmit: values => {
-            alert(createUser(values));
+            setIsSubmitting(true);
+            setError('');
+            const basicErrorMessage = 'Something went wrong, please try again later.';
+            createUser(values).then(async response => {
+                setIsSubmitting(false);
+                if (!response.ok) {
+                    alert("invalid creds");
+                    setError('Invalid credentials.');
+                } else {
+                    alert("hurray");
+                    const data = await response.json();
+                    setUserContext(oldValues => {
+                        return { ...oldValues, token: data.token };
+                    })
+                }
+            }).catch(error => {
+                setIsSubmitting(false);
+                setError(basicErrorMessage);
+            })
         },
     });
  
     return (
     <>
+    { error !== '' ? <ErrorAlert error={error} /> : '' }
     <h2>Register</h2>
     <Form onSubmit={formik.handleSubmit}>
         <FloatingLabel controlId="floatingInput" label="Name" className="mb-3">
