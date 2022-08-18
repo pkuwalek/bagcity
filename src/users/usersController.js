@@ -42,19 +42,25 @@ const createUser = async (params) => {
 };
 exports.createUser = createUser;
 
-const pushNewRefreshToken = async (id, refreshToken) => {
-  await prisma.users.update({
-    where: { user_id: Number(id) },
-    data: { refresh_token: { push: refreshToken } },
-  });
+const pushNewRefreshToken = (id, refreshToken) => {
+  return prisma.users
+    .update({
+      where: { user_id: Number(id) },
+      data: { refresh_token: { push: refreshToken } },
+    })
+    .then(() => true)
+    .catch(() => false);
 };
 exports.pushNewRefreshToken = pushNewRefreshToken;
 
-const setRefreshedTokens = async (id, refreshedTokens) => {
-  await prisma.users.update({
-    where: { user_id: Number(id) },
-    data: { refresh_token: { set: refreshedTokens } },
-  });
+const setRefreshedTokens = (id, refreshedTokens) => {
+  return prisma.users
+    .update({
+      where: { user_id: Number(id) },
+      data: { refresh_token: { set: refreshedTokens } },
+    })
+    .then(() => true)
+    .catch(() => false);
 };
 exports.setRefreshedTokens = setRefreshedTokens;
 
@@ -72,15 +78,18 @@ const findUsersBags = async (id) => {
 exports.findUsersBags = findUsersBags;
 
 const addBagToUser = async (user_id, bag_id) => {
-  return prisma.user_bag_relations.create({
-    data: {
-      users: { connect: { user_id: Number(user_id) } },
-      bags: { connect: { bag_id: Number(bag_id) } },
-    },
-    include: {
-      users: true,
-      bags: true,
-    },
-  });
+  return prisma.user_bag_relations
+    .create({
+      data: {
+        users: { connect: { user_id: Number(user_id) } },
+        bags: { connect: { bag_id: Number(bag_id) } },
+      },
+      include: {
+        users: true,
+        bags: true,
+      },
+    })
+    .then(() => true)
+    .catch(() => false);
 };
 exports.addBagToUser = addBagToUser;

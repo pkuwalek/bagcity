@@ -27,9 +27,13 @@ router.post('/login', authenticateUser, async (req, res) => {
   const token = getToken({ user_id: req.user.user_id });
   const refreshToken = getRefreshToken({ user_id: req.user.user_id });
   pushNewRefreshToken(req.user.user_id, refreshToken)
-    .then(() => {
-      res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
-      res.send({ success: true, token });
+    .then((success) => {
+      if (success) {
+        res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
+        res.send({ success: true, token });
+      } else {
+        res.status(500).send('Unable to push new refresh token.');
+      }
     })
     .catch((err) => {
       res.status(401).send(err);
@@ -93,10 +97,15 @@ router.get('/logout', verifyUser, (req, res, next) => {
 
       if (tokenIndex !== -1) {
         const leftoverTokens = user.refresh_token.filter((token) => token !== refreshToken);
-        setRefreshedTokens(user.user_id, leftoverTokens)
-          .then(() => {
-            res.clearCookie('refreshToken', COOKIE_OPTIONS);
-            res.send({ success: true });
+        setRefreshedTokens(req.user.user_id, leftoverTokens)
+          .then((success) => {
+            if (success) {
+              res.clearCookie('refreshToken', COOKIE_OPTIONS);
+              res.send({ success: true });
+            } else {
+              res.statusCode = 500;
+              res.send('Saving refreshed tokens failed');
+            }
           })
           .catch((err) => {
             res.statusCode = 500;

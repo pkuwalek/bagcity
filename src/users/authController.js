@@ -75,8 +75,8 @@ const getToken = (user) => {
     expiresIn: process.env.SESSION_EXPIRY,
   });
 };
-
 exports.getToken = getToken;
+
 const getRefreshToken = (user) => {
   return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
