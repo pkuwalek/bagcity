@@ -34,10 +34,8 @@ const LoginPage = () => {
             authenticateUser(values).then(async response => {
                 setIsSubmitting(false);
                 if (!response.ok) {
-                    alert("invalid creds");
                     setError('Invalid email or password.');
                 } else {
-                    alert("hurray");
                     const data = await response.json();
                     setUserContext(oldValues => {
                         return { ...oldValues, token: data.token };

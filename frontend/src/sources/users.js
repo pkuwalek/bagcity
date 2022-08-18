@@ -1,3 +1,4 @@
+import { UserContext } from '../context/userContext';
 import { BACKEND_URL } from '../dbUrl';
 const urlAuth = `${BACKEND_URL}/auth/`;
 
@@ -24,6 +25,18 @@ export const verifyUser = () => {
         method: 'POST',
         credentials: 'include',
         headers: {'Content-Type': 'application/json'},
+    });
+    return response;
+};
+
+export const getUserDetails = () => {
+    const response = fetch (`${urlAuth}me`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${UserContext.token}`,
+        },
     });
     return response;
 };
