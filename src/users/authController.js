@@ -7,7 +7,7 @@ const argon2 = require('argon2');
 const { PrismaClient } = require('@prisma/client');
 const { findUserById } = require('./usersController');
 
-const dev = process.env.NODE_ENV !== 'production';
+// const dev = process.env.NODE_ENV !== 'production';
 
 const prisma = new PrismaClient();
 
@@ -63,7 +63,7 @@ const COOKIE_OPTIONS = {
   httpOnly: true,
   // Since localhost is not having https protocol,
   // secure cookies do not work correctly (in postman)
-  secure: !dev,
+  secure: true, // !dev
   signed: true,
   maxAge: 1000 * 60 * 60 * 24 * 30,
   sameSite: 'none',
