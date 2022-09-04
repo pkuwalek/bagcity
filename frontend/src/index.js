@@ -7,7 +7,11 @@ import { UserProvider } from './context/userContext';
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
-root.render(<UserProvider><App /></UserProvider>);
+root.render(
+  <UserProvider>
+    <App />
+  </UserProvider>
+);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

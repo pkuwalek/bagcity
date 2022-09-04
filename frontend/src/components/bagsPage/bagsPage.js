@@ -7,25 +7,29 @@ const BagsPage = () => {
 
   useEffect(() => {
     getAllBags()
-    .then((response) => response.json())
-    .then((response_json) => setAllBags(response_json))
-    .catch((error) => console.error(error))
-  }, [])
+      .then((response) => response.json())
+      .then((response_json) => setAllBags(response_json))
+      .catch((error) => console.error(error));
+  }, []);
 
-    return (
+  return (
     <>
-    <h1>Bags:</h1>
+      <h1>Bags:</h1>
+      <div>
         <div>
-            <div>
-              {/* <p>{allBags && JSON.stringify(allBags, null, 4)}</p> */}
-              <p>Name</p>
-              {/* <p>{allBags.map(response => <li key={response.bag_id}>{response.bag_name}</li>)}</p> */}
-            </div>
-            <div>
-              <span>{allBags.map(response => <BagCard key={response.bag_id} bags={response} />)}</span>
-            </div>
+          {/* <p>{allBags && JSON.stringify(allBags, null, 4)}</p> */}
+          <p>Name</p>
+          {/* <p>{allBags.map(response => <li key={response.bag_id}>{response.bag_name}</li>)}</p> */}
         </div>
+        <div>
+          <span>
+            {allBags.map((response) => (
+              <BagCard key={response.bag_id} bags={response} />
+            ))}
+          </span>
+        </div>
+      </div>
     </>
-    )
+  );
 };
 export default BagsPage;
