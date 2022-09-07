@@ -1,9 +1,10 @@
-import React, { useContext, useCallback, useEffect } from 'react';
+import React, { useContext, useCallback, useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Button from 'react-bootstrap/Button';
 import { UserContext } from '../../context/userContext';
-import { verifyUser } from '../../sources/users';
+import { logoutUser, verifyUser } from '../../sources/users';
 
 const NavbarMenu = () => {
   const [userContext, setUserContext] = useContext(UserContext);
@@ -28,6 +29,19 @@ const NavbarMenu = () => {
     getRefreshToken();
   }, [getRefreshToken]);
 
+  const logoutHandler = () => {
+    logoutUser(userContext.token).then(async (response) => {
+      if (response.ok) {
+        setUserContext((oldValues) => {
+          return { ...oldValues, details: undefined, token: null };
+        });
+      } else {
+        alert('Sorry, we cant log you out right now. Try again later.');
+      }
+      // window.localStorage.setItem('logout', Date.now());
+    });
+  };
+
   return (
     <Navbar bg="light" expand="lg" sticky="top">
       <Container>
@@ -45,10 +59,16 @@ const NavbarMenu = () => {
             </>
           ) : (
             <>
-              <Navbar.Text>
-                Signed in as: <a href="/me">name-here</a>
-              </Navbar.Text>
-              <Nav.Link href="/logout">Logout</Nav.Link>
+              <Navbar.Text className="p-2">Signed in</Navbar.Text>
+              <Nav.Link className="p-2" href="/me">
+                Dashboard
+              </Nav.Link>
+              <Button onClick={logoutHandler} variant="outline-dark">
+                Logout
+              </Button>
+              {/* <Nav.Link className="p-2" href="/logout">
+                Logout
+              </Nav.Link> */}
             </>
           )}
         </Navbar.Collapse>

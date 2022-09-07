@@ -41,3 +41,15 @@ export const getUserDetails = (token) => {
   });
   return response;
 };
+
+export const logoutUser = (token) => {
+  const response = fetch(`${urlAuth}logout`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response;
+};

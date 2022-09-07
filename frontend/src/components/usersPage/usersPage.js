@@ -30,7 +30,7 @@ const UsersPage = () => {
     }
   }, [userContext.details, userContext.token, getDetails]);
 
-  return userContext.details === null ? (
+  return userContext.details === undefined ? (
     <h1>Please log in or register to view this page.</h1>
   ) : (
     <>
