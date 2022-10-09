@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Button from 'react-bootstrap/Button';
@@ -10,6 +11,7 @@ import { UserContext } from '../../context/userContext';
 import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [userContext, setUserContext] = useContext(UserContext);
@@ -35,6 +37,7 @@ const LoginPage = () => {
           } else {
             const data = await response.json();
             setUserContext((oldValues) => {
+              navigate('/me');
               return { ...oldValues, token: data.token };
             });
           }

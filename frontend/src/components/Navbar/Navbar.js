@@ -50,7 +50,7 @@ const NavbarMenu = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="#link">Link</Nav.Link>
+            <Nav.Link href="/bags">Bags</Nav.Link>
           </Nav>
           {userContext.token === null ? (
             <>

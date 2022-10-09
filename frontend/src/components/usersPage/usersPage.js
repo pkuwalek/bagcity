@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { UserContext } from '../../context/userContext';
 import { getUserDetails } from '../../sources/users';
 
@@ -31,7 +32,7 @@ const UsersPage = () => {
   }, [userContext.details, userContext.token, getDetails]);
 
   return userContext.details === undefined ? (
-    <h1>Please log in or register to view this page.</h1>
+    <Navigate replace to="/login" />
   ) : (
     <>
       <h1>Greetings user</h1>
