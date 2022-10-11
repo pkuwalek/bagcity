@@ -5,6 +5,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import { UserContext } from '../../context/userContext';
 import { logoutUser, verifyUser } from '../../sources/users';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
 const NavbarMenu = () => {
   const [userContext, setUserContext] = useContext(UserContext);
@@ -36,7 +37,8 @@ const NavbarMenu = () => {
           return { ...oldValues, details: undefined, token: null };
         });
       } else {
-        alert('Sorry, we cant log you out right now. Try again later.');
+        <ErrorAlert error={'something went wrong'} />;
+        // alert('Sorry, we cant log you out right now. Try again later.');
       }
       // window.localStorage.setItem('logout', Date.now());
     });

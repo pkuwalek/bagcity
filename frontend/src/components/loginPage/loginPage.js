@@ -36,8 +36,8 @@ const LoginPage = () => {
             setError('Invalid email or password.');
           } else {
             const data = await response.json();
+            navigate(-1);
             setUserContext((oldValues) => {
-              navigate('/me');
               return { ...oldValues, token: data.token };
             });
           }

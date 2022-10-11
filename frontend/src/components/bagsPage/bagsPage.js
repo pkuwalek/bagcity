@@ -4,12 +4,13 @@ import BagCard from '../BagCard/BagCard';
 
 const BagsPage = () => {
   const [allBags, setAllBags] = useState([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     getAllBags()
       .then((response) => response.json())
       .then((response_json) => setAllBags(response_json))
-      .catch((error) => console.error(error));
+      .catch(() => setError('Something went wrong, please try again later.'));
   }, []);
 
   return (
