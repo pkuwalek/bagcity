@@ -8,20 +8,18 @@ import UsersPageContent from './usersPageContent';
 const UsersPage = () => {
   const [userContext, setUserContext] = useContext(UserContext);
   const [userName, setUserName] = useState('');
-  const [isReady, setIsReady] = useState('waiting');
+  const [currentContent, setCurrentContent] = useState('');
 
   const getDetails = useCallback(() => {
     getUserDetails(userContext.token).then(async (response) => {
       if (response.ok) {
         const data = await response.json();
         setUserContext((oldValues) => {
-          setIsReady('accepted');
-          return { ...oldValues, details: data };
+          return { ...oldValues, details: data, userStatus: 'accepted' };
         });
       } else {
         setUserContext((oldValues) => {
-          setIsReady('rejected');
-          return { ...oldValues, details: null };
+          return { ...oldValues, details: null, userStatus: 'rejected' };
         });
       }
     });
@@ -29,22 +27,25 @@ const UsersPage = () => {
 
   useEffect(() => {
     if (userContext.token === null) {
-      setIsReady('rejected');
+      setUserContext((oldValues) => {
+        return { ...oldValues, userStatus: 'rejected' };
+      });
     } else if (!userContext.details && userContext.token) {
       getDetails();
     } else if (userContext.details) {
       setUserName(userContext.details.user_name);
     }
-  }, [userContext.details, userContext.token, getDetails]);
+  }, [userContext.details, userContext.token, setUserContext, getDetails]);
 
-  let currentContent;
-  if (isReady === 'rejected') {
-    currentContent = <Navigate replace to="/login" />;
-  } else if (isReady === 'accepted') {
-    currentContent = <UsersPageContent />;
-  } else {
-    currentContent = <Spinner animation="border" variant="secondary" />;
-  }
+  useEffect(() => {
+    if (userContext.userStatus === 'rejected') {
+      setCurrentContent(<Navigate replace to="/login" />);
+    } else if (userContext.userStatus === 'accepted') {
+      setCurrentContent(<UsersPageContent />);
+    } else {
+      setCurrentContent(<Spinner animation="border" variant="secondary" />);
+    }
+  }, [userContext.userStatus]);
 
   return <>{currentContent}</>;
 };

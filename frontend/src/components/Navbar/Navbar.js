@@ -68,9 +68,6 @@ const NavbarMenu = () => {
               <Button onClick={logoutHandler} variant="outline-dark">
                 Logout
               </Button>
-              {/* <Nav.Link className="p-2" href="/logout">
-                Logout
-              </Nav.Link> */}
             </>
           )}
         </Navbar.Collapse>
