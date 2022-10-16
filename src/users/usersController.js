@@ -68,7 +68,6 @@ const findUsersBags = async (id) => {
   return prisma.user_bag_relations.findMany({
     where: { user_id: Number(id) },
     include: {
-      users: true,
       bags: {
         include: { colors: true, brands: true, types: true },
       },

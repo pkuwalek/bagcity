@@ -45,7 +45,7 @@ const UsersPage = () => {
     } else {
       setCurrentContent(<Spinner animation="border" variant="secondary" />);
     }
-  }, [userContext.userStatus]);
+  }, [userContext.details, userContext.userStatus]);
 
   return <>{currentContent}</>;
 };

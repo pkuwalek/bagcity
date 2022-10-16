@@ -1,6 +1,7 @@
 import { BACKEND_URL } from '../dbUrl';
 
 const urlAuth = `${BACKEND_URL}/auth/`;
+const urlUsers = `${BACKEND_URL}/users/`;
 
 export const createUser = (data) => {
   const response = fetch(`${urlAuth}register`, {
@@ -44,6 +45,18 @@ export const getUserDetails = (token) => {
 
 export const logoutUser = (token) => {
   const response = fetch(`${urlAuth}logout`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response;
+};
+
+export const getUsersBags = (id, token) => {
+  const response = fetch(`${urlUsers}${id}/bags`, {
     method: 'GET',
     credentials: 'include',
     headers: {
