@@ -7,8 +7,7 @@ import BagCard from '../BagCard/BagCard';
 const BagsPage = () => {
   const [allBags, setAllBags] = useState([]);
   const [error, setError] = useState('');
-  const [usersBags, setUsersBags] = useState([]);
-  const [userContext] = useContext(UserContext);
+  const [userContext, setUserContext] = useContext(UserContext);
 
   useEffect(() => {
     getAllBags()
@@ -18,14 +17,29 @@ const BagsPage = () => {
   }, []);
 
   useEffect(() => {
-    // if user context have token fetch users bags
     if (userContext.token) {
-      // getDetails();
-      getUsersBags(4, userContext.token)
+      getUserDetails(userContext.token).then(async (response) => {
+        if (response.ok) {
+          const data = await response.json();
+          setUserContext((oldValues) => {
+            return { ...oldValues, details: data };
+          });
+        } else {
+          setUserContext((oldValues) => {
+            return { ...oldValues, details: null };
+          });
+        }
+      });
+    }
+  }, [userContext.token]);
+
+  useEffect(() => {
+    if (userContext.details) {
+      getUsersBags(userContext.details.user_id, userContext.token)
         .then((response) => response.json())
         .then((response_json) => {
           if (response_json.length !== 0) {
-            setUsersBags(response_json.map((bag) => bag.bag_id));
+            const usersBags = response_json.map((bag) => bag.bag_id);
             setAllBags(
               allBags.map((bag) => {
                 if (usersBags.includes(bag.bag_id)) {
@@ -36,15 +50,13 @@ const BagsPage = () => {
             );
           }
         })
-        .catch(() => setError('Something went wrong, please try again later.'));
+        .catch((e) => setError(e));
     }
-    // modify allBags by adding info if owned
-  }, [allBags, userContext.token]);
+  }, [userContext.details]);
 
   return (
     <>
       <h1>Bags:</h1>
-      <p>{JSON.stringify(usersBags)}</p>
       <div>
         <span>
           {allBags.map((response) => (
