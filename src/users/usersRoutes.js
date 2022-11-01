@@ -1,5 +1,5 @@
 const express = require('express');
-const { findUserById, findUsersBags, addBagToUser } = require('./usersController');
+const { findUserById, findUsersBags, addBagToUser, removeBagFromUser } = require('./usersController');
 
 const router = express.Router();
 
@@ -38,6 +38,18 @@ router.post('/bags', (req, res) => {
     })
     .catch(() => {
       res.status(500).send('Unable to add bag.');
+    });
+});
+
+router.delete('/bags', (req, res) => {
+  const { user_id } = req.user;
+  const { bag_id } = req.body;
+  removeBagFromUser(user_id, bag_id)
+    .then(() => {
+      res.status(200).send({ success: true });
+    })
+    .catch(() => {
+      res.status(500).send('Unable to remove bag.');
     });
 });
 

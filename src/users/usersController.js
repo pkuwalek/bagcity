@@ -92,3 +92,22 @@ const addBagToUser = async (user_id, bag_id) => {
     .catch(() => false);
 };
 exports.addBagToUser = addBagToUser;
+
+const removeBagFromUser = async (user_id, bag_id) => {
+  return prisma.user_bag_relations
+    .delete({
+      where: {
+        user_id_bag_id: {
+          user_id: Number(user_id),
+          bag_id: Number(bag_id),
+        },
+      },
+    })
+    .then(() => {
+      return true;
+    })
+    .catch(() => {
+      return false;
+    });
+};
+exports.removeBagFromUser = removeBagFromUser;
