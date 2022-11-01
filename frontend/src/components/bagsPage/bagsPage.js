@@ -38,17 +38,15 @@ const BagsPage = () => {
       getUsersBags(userContext.details.user_id, userContext.token)
         .then((response) => response.json())
         .then((response_json) => {
-          if (response_json.length !== 0) {
-            const usersBags = response_json.map((bag) => bag.bag_id);
-            setAllBags(
-              allBags.map((bag) => {
-                if (usersBags.includes(bag.bag_id)) {
-                  return { ...bag, owned: true };
-                }
-                return { ...bag, owned: false };
-              })
-            );
-          }
+          const usersBags = response_json.map((bag) => bag.bag_id);
+          setAllBags(
+            allBags.map((bag) => {
+              if (usersBags.includes(bag.bag_id)) {
+                return { ...bag, owned: true };
+              }
+              return { ...bag, owned: false };
+            })
+          );
         })
         .catch((e) => setError(e));
     }

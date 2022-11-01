@@ -66,3 +66,16 @@ export const getUsersBags = (id, token) => {
   });
   return response;
 };
+
+export const addBag = (bagId, token) => {
+  const response = fetch(`${urlUsers}bags`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ bag_id: bagId }),
+  });
+  return response;
+};

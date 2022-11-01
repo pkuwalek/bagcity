@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
-import BagCard from '../BagCard/BagCard';
 import { UserContext } from '../../context/userContext';
 import { getUsersBags } from '../../sources/users';
+import BagCard from '../BagCard/BagCard';
 
 const UsersPageContent = () => {
   const [userContext] = useContext(UserContext);
