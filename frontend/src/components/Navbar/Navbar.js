@@ -5,7 +5,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import { UserContext } from '../../context/userContext';
 import { logoutUser, verifyUser } from '../../sources/users';
-import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import ErrorAlert from '../Alerts/ErrorAlert';
 
 const NavbarMenu = () => {
   const [userContext, setUserContext] = useContext(UserContext);

@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 import './loginPage.scss';
 import { authenticateUser } from '../../sources/users';
 import { UserContext } from '../../context/userContext';
-import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import ErrorAlert from '../Alerts/ErrorAlert';
 
 const LoginPage = () => {
   const navigate = useNavigate();

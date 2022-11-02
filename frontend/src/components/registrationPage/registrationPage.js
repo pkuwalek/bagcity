@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import './registrationPage.scss';
 import { createUser } from '../../sources/users';
 import { UserContext } from '../../context/userContext';
-import ErrorAlert from '../ErrorAlert/ErrorAlert';
+import ErrorAlert from '../Alerts/ErrorAlert';
 
 const RegistrationPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
