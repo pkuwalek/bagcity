@@ -1,32 +1,44 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { UserContext } from '../../context/userContext';
-import ErrorAlert from '../ErrorAlert/ErrorAlert';
-import { addBag } from '../../sources/users';
+import ErrorAlert from '../Alerts/ErrorAlert';
+import SuccessAlert from '../Alerts/SuccessAlert';
+import { addBag, removeBag } from '../../sources/users';
 
 const BagCard = (props) => {
   const [userContext] = useContext(UserContext);
+  const [currentBag, setCurrentBag] = useState(props.bags);
+
+  useEffect(() => setCurrentBag(props.bags), [props.bags]);
+
   const btnAddHandler = () => {
-    if (props.bags.owned === false) {
-      addBag(props.bags.bag_id, userContext.token).then((res) => (res.ok ? alert('success') : alert('nope')));
+    if (currentBag.owned === false) {
+      addBag(currentBag.bag_id, userContext.token).then((res) =>
+        res.ok ? setCurrentBag({ ...currentBag, owned: true }) : console.log(res)
+      );
     } else {
-      alert('Else that does not work');
-      <ErrorAlert props={'You need to be logged in to add a bag'} />;
+      // <ErrorAlert props={'You need to be logged in to add a bag'} />;
     }
   };
-  const btnRemoveHandler = () => {};
+
+  const btnRemoveHandler = () => {
+    removeBag(userContext.token, currentBag.bag_id).then((res) =>
+      res.ok ? setCurrentBag({ ...currentBag, owned: false }) : console.log(res)
+    );
+  };
+
   return (
     <Card style={{ width: '18rem' }}>
       <Card.Body>
-        <Link to={`/bags/${props.bags.bag_id}`}>
-          <Card.Img variant="top" src={props.bags.photo_url} style={{ width: 254, height: 'auto' }} />
-          <Card.Title>Name: {props.bags.bag_name}</Card.Title>
-          <Card.Subtitle className="mb-2 text-muted">Price: {props.bags.price}$</Card.Subtitle>
-          <Card.Text>Brand: {props.bags.brands.brand_name}</Card.Text>
+        <Link to={`/bags/${currentBag.bag_id}`}>
+          <Card.Img variant="top" src={currentBag.photo_url} style={{ width: 254, height: 'auto' }} />
+          <Card.Title>Name: {currentBag.bag_name}</Card.Title>
+          <Card.Subtitle className="mb-2 text-muted">Price: {currentBag.price}$</Card.Subtitle>
+          <Card.Text>Brand: {currentBag.brands.brand_name}</Card.Text>
         </Link>
-        {props.bags.owned === true ? (
+        {currentBag.owned === true ? (
           <Button onClick={btnRemoveHandler} variant="secondary">
             Remove from collection
           </Button>

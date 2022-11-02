@@ -79,3 +79,16 @@ export const addBag = (bagId, token) => {
   });
   return response;
 };
+
+export const removeBag = (token, bagId) => {
+  const response = fetch(`${urlUsers}bags`, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ bag_id: bagId }),
+  });
+  return response;
+};

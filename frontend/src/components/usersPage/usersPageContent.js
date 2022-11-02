@@ -22,7 +22,7 @@ const UsersPageContent = () => {
       <h3>Your ID is {userContext.details.user_id}</h3>
       <span>
         {usersBags.map((response) => (
-          <BagCard key={response.bag_id} bags={response.bags} />
+          <BagCard key={response.bag_id} bags={{ ...response.bags, owned: true }} />
         ))}
       </span>
     </>
