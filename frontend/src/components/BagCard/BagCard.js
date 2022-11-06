@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import { UserContext } from '../../context/userContext';
 import ErrorAlert from '../Alerts/ErrorAlert';
@@ -30,25 +31,27 @@ const BagCard = (props) => {
   };
 
   return (
-    <Card style={{ width: '18rem' }}>
-      <Card.Body>
-        <Link to={`/bags/${currentBag.bag_id}`}>
-          <Card.Img variant="top" src={currentBag.photo_url} style={{ width: 254, height: 'auto' }} />
-          <Card.Title>Name: {currentBag.bag_name}</Card.Title>
-          <Card.Subtitle className="mb-2 text-muted">Price: {currentBag.price}$</Card.Subtitle>
-          <Card.Text>Brand: {currentBag.brands.brand_name}</Card.Text>
-        </Link>
-        {currentBag.owned === true ? (
-          <Button onClick={btnRemoveHandler} variant="secondary">
-            Remove from collection
-          </Button>
-        ) : (
-          <Button onClick={btnAddHandler} variant="primary">
-            Add to collection
-          </Button>
-        )}
-      </Card.Body>
-    </Card>
+    <Col>
+      <Card style={{ width: '18rem' }}>
+        <Card.Body>
+          <Link to={`/bags/${currentBag.bag_id}`}>
+            <Card.Img variant="top" src={currentBag.photo_url} style={{ width: 254, height: 'auto' }} />
+            <Card.Title>Name: {currentBag.bag_name}</Card.Title>
+            <Card.Subtitle className="mb-2 text-muted">Price: {currentBag.price}$</Card.Subtitle>
+            <Card.Text>Brand: {currentBag.brands.brand_name}</Card.Text>
+          </Link>
+          {currentBag.owned === true ? (
+            <Button onClick={btnRemoveHandler} variant="secondary">
+              Remove from collection
+            </Button>
+          ) : (
+            <Button onClick={btnAddHandler} variant="primary">
+              Add to collection
+            </Button>
+          )}
+        </Card.Body>
+      </Card>
+    </Col>
   );
 };
 

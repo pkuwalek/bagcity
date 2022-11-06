@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
 import { getAllBags } from '../../sources/bags';
 import { getUserDetails, getUsersBags } from '../../sources/users';
 import { UserContext } from '../../context/userContext';
@@ -54,14 +56,13 @@ const BagsPage = () => {
 
   return (
     <>
-      <h1>Bags:</h1>
-      <div>
-        <span>
+      <Container>
+        <Row xs={1} md={'auto'} className="g-4">
           {allBags.map((response) => (
             <BagCard key={response.bag_id} bags={response} />
           ))}
-        </span>
-      </div>
+        </Row>
+      </Container>
     </>
   );
 };
