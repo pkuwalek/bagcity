@@ -1,1 +1,12 @@
-@import "~bootstrap/scss/bootstrap";
+@import '~bootstrap/scss/bootstrap';
+@import './style.scss';
+
+body {
+    p {
+        font-family: $fontParagraph;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        font-family: $fontHeader;
+    }
+    background-color: $colorVeryLightGray;
+}

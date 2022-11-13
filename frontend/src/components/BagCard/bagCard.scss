@@ -1,0 +1,31 @@
+@import '../../style.scss';
+
+.card {
+    border-radius: 0;
+    .card-body {
+        background-color: $colorVeryLightGray;
+        img {
+            border: 2px solid $colorMauve;
+            border-radius: 0;
+        }
+        a {
+            text-decoration: none;
+            color: $colorDarkGray;
+        }
+        button {
+            display: block;
+            border-radius: 0;
+            font-family: $fontSubHeader;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .btn-primary {
+            background-color: $colorMauve;
+        }
+        .btn-secondary {
+            background-color: $colorDarkGray;
+        }
+        
+    }
+}

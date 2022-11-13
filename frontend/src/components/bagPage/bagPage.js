@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import { useParams } from 'react-router-dom';
 import { getBagById } from '../../sources/bags';
 import './bagPage.scss';
@@ -15,25 +18,28 @@ const BagPage = () => {
   }, [id]);
 
   return (
-    <>
-      <h1>The Bag:</h1>
-      <div>
-        <h2>Bag name:</h2>
-        <p>{singleBag.bag_name}</p>
-        <h2>Brand:</h2>
-        <p>{singleBag.brands.brand_name}</p>
-        <h2>Price:</h2>
-        <p>{singleBag.price}</p>
-        <h2>Photo:</h2>
-        <img src={singleBag.photo_url} alt="bag"></img>
-        <h2>Color:</h2>
-        <p>{singleBag.colors.color_name}</p>
-        <h2>Type:</h2>
-        <p>{singleBag.types.type_name}</p>
-        <h2>Description:</h2>
-        <p>{singleBag.description}</p>
-      </div>
-    </>
+    <Container>
+      <Row>
+        <Col md={true}>
+          <img src={singleBag.photo_url} alt="bag"></img>
+        </Col>
+        <Col md={true}>
+          <h1>{singleBag.brands.brand_name}</h1>
+          <h3>{singleBag.bag_name}</h3>
+          <h4>Price:&nbsp;</h4>
+          <p>{singleBag.price}$</p>
+          <br />
+          <h4>Color:&nbsp;</h4>
+          <p>{singleBag.colors.color_name}</p>
+          <br />
+          <h4>Type:&nbsp;</h4>
+          <p>{singleBag.types.type_name}</p>
+          <br />
+          <h4>Description:</h4>
+          <p>{singleBag.description}</p>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 export default BagPage;

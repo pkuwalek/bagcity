@@ -7,6 +7,7 @@ import { UserContext } from '../../context/userContext';
 import ErrorAlert from '../Alerts/ErrorAlert';
 import SuccessAlert from '../Alerts/SuccessAlert';
 import { addBag, removeBag } from '../../sources/users';
+import './bagCard.scss';
 
 const BagCard = (props) => {
   const [userContext] = useContext(UserContext);

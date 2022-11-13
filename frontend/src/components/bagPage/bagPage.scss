@@ -1,4 +1,19 @@
-img {
-    height: 300px;
+@import '../../style.scss';
 
+.row {
+    margin: 20px;
+    img {    
+    max-width: 100%;
+    display: block;
+    border: 3px solid $colorDarkNavy;
+    padding: 5px;
+    }
+    h4 {
+        display: inline-block;
+    }
+    p {
+        color: $colorDarkGray;
+        font-size: 19px;
+        display: inline-block;
+    }
 }
