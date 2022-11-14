@@ -2,6 +2,7 @@
 
 .card {
     border-radius: 0;
+    width: '18rem';
     .card-body {
         background-color: $colorVeryLightGray;
         img {
@@ -22,10 +23,23 @@
         }
         .btn-primary {
             background-color: $colorMauve;
+            color: $colorDarkGray;
+            border: 1px solid $colorDarkGray;
+            &:hover {
+                background-color: $colorDarkMauve;
+                color: $colorDarkGray;
+                border: 1px solid $colorDarkGray;
+            }
         }
         .btn-secondary {
-            background-color: $colorDarkGray;
+            background-color: $colorLightGray;
+            color: $colorDarkGray;
+            border: 1px solid $colorDarkGray;
+            &:hover {
+                background-color: $colorGray;
+                color: $colorDarkGray;
+                border: 1px solid $colorDarkGray;
+            }
         }
-        
     }
 }

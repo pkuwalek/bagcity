@@ -33,7 +33,7 @@ const BagCard = (props) => {
 
   return (
     <Col>
-      <Card style={{ width: '18rem' }}>
+      <Card>
         <Card.Body>
           <Link to={`/bags/${currentBag.bag_id}`}>
             <Card.Img variant="top" src={currentBag.photo_url} style={{ width: 254, height: 'auto' }} />
@@ -41,15 +41,17 @@ const BagCard = (props) => {
             <Card.Subtitle className="mb-2 text-muted">Price: {currentBag.price}$</Card.Subtitle>
             <Card.Text>Brand: {currentBag.brands.brand_name}</Card.Text>
           </Link>
-          {currentBag.owned === true ? (
-            <Button onClick={btnRemoveHandler} variant="secondary">
-              Remove from collection
-            </Button>
-          ) : (
-            <Button onClick={btnAddHandler} variant="primary">
-              Add to collection
-            </Button>
-          )}
+          <div className="d-grid gap-2">
+            {currentBag.owned === true ? (
+              <Button onClick={btnRemoveHandler} variant="secondary">
+                Remove from collection
+              </Button>
+            ) : (
+              <Button onClick={btnAddHandler} variant="primary">
+                Add to collection
+              </Button>
+            )}
+          </div>
         </Card.Body>
       </Card>
     </Col>
