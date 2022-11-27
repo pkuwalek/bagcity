@@ -10,6 +10,20 @@ import './Navbar.scss';
 
 const NavbarMenu = () => {
   const [userContext, setUserContext] = useContext(UserContext);
+  const [name, setName] = useState('');
+
+  useEffect(() => {
+    if (userContext.details) {
+      localStorage.setItem('name', JSON.stringify(userContext.details.user_name));
+    }
+  }, [userContext.details]);
+
+  useEffect(() => {
+    const userName = JSON.parse(localStorage.getItem('name'));
+    if (userName) {
+      setName(userName);
+    }
+  }, []);
 
   const getRefreshToken = useCallback(() => {
     verifyUser().then(async (response) => {
@@ -62,7 +76,7 @@ const NavbarMenu = () => {
             </>
           ) : (
             <>
-              <Navbar.Text className="p-2">Signed in</Navbar.Text>
+              <Navbar.Text className="p-2">Signed in as {name}</Navbar.Text>
               <Nav.Link className="p-2" href="/me">
                 Dashboard
               </Nav.Link>
