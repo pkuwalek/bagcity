@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import { UserContext } from '../../context/userContext';
-import { logoutUser, verifyUser } from '../../sources/users';
+import { logoutUser, verifyUser, getUsersBagsIds } from '../../sources/users';
 import ErrorAlert from '../Alerts/ErrorAlert';
 import './Navbar.scss';
 
@@ -15,6 +15,11 @@ const NavbarMenu = () => {
   useEffect(() => {
     if (userContext.details) {
       localStorage.setItem('name', JSON.stringify(userContext.details.user_name));
+      getUsersBagsIds(userContext.details.user_id, userContext.token)
+        .then((response) => response.json())
+        .then((response_json) => {
+          localStorage.setItem('bags', JSON.stringify(response_json.map((bag) => bag.bag_id)));
+        });
     }
   }, [userContext.details]);
 
