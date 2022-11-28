@@ -76,6 +76,13 @@ const findUsersBags = async (id) => {
 };
 exports.findUsersBags = findUsersBags;
 
+const getUsersBagsIds = async (id) => {
+  return prisma.user_bag_relations.findMany({
+    where: { user_id: Number(id) },
+  });
+};
+exports.getUsersBagsIds = getUsersBagsIds;
+
 const addBagToUser = async (user_id, bag_id) => {
   return prisma.user_bag_relations
     .create({

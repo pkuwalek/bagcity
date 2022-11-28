@@ -1,5 +1,5 @@
 const express = require('express');
-const { findUserById, findUsersBags, addBagToUser, removeBagFromUser } = require('./usersController');
+const { findUserById, findUsersBags, addBagToUser, removeBagFromUser, getUsersBagsIds } = require('./usersController');
 
 const router = express.Router();
 
@@ -21,6 +21,17 @@ router.get('/:id', async (req, res) => {
 router.get('/:id/bags', (req, res) => {
   const { id } = req.params;
   findUsersBags(id)
+    .then((bags) => {
+      res.status(200).send(bags);
+    })
+    .catch(() => {
+      res.status(500).send('Unable to get bags.');
+    });
+});
+
+router.get('/:id/bagsid', (req, res) => {
+  const { id } = req.params;
+  getUsersBagsIds(id)
     .then((bags) => {
       res.status(200).send(bags);
     })

@@ -67,6 +67,18 @@ export const getUsersBags = (id, token) => {
   return response;
 };
 
+export const getUsersBagsIds = (id, token) => {
+  const response = fetch(`${urlUsers}${id}/bagsid`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response;
+};
+
 export const addBag = (bagId, token) => {
   const response = fetch(`${urlUsers}bags`, {
     method: 'POST',
