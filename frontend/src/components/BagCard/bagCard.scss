@@ -2,6 +2,7 @@
 
 .card {
     border-radius: 0;
+    border: 1px solid $colorDarkGray;
     width: '18rem';
     .card-body {
         background-color: $colorVeryLightGray;

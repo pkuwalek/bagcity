@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import { getAllBags } from '../../sources/bags';
-import { getUserDetails, getUsersBags } from '../../sources/users';
+import { getUserDetails, getUsersBagsIds } from '../../sources/users';
 import { UserContext } from '../../context/userContext';
 import BagCard from '../BagCard/BagCard';
 
@@ -37,7 +37,7 @@ const BagsPage = () => {
 
   useEffect(() => {
     if (userContext.details) {
-      getUsersBags(userContext.details.user_id, userContext.token)
+      getUsersBagsIds(userContext.details.user_id, userContext.token)
         .then((response) => response.json())
         .then((response_json) => {
           const usersBags = response_json.map((bag) => bag.bag_id);

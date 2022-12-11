@@ -1,14 +1,56 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 import { useParams } from 'react-router-dom';
 import { getBagById } from '../../sources/bags';
+import { addBag, removeBag } from '../../sources/users';
+import { UserContext } from '../../context/userContext';
 import './bagPage.scss';
 
 const BagPage = () => {
   const { id } = useParams();
   const [singleBag, setSingleBag] = useState({ brands: {}, colors: {}, types: {} });
+  const [userContext] = useContext(UserContext);
+  const [ownedBags, setOwnedBags] = useState([]);
+
+  useEffect(() => {
+    const usersBags = JSON.parse(localStorage.getItem('bags'));
+    if (usersBags) {
+      setOwnedBags(usersBags);
+    }
+  }, []);
+
+  const btnAddHandler = () => {
+    if (!ownedBags.includes(singleBag.bag_id)) {
+      addBag(singleBag.bag_id, userContext.token).then((res) => {
+        if (res.ok) {
+          const oldBags = JSON.parse(localStorage.getItem('bags'));
+          oldBags.push(singleBag.bag_id);
+          localStorage.setItem('bags', JSON.stringify(oldBags));
+          setOwnedBags(oldBags);
+        } else {
+          console.log(res);
+        }
+      });
+    } else {
+      // <ErrorAlert props={'You need to be logged in to add a bag'} />;
+    }
+  };
+
+  const btnRemoveHandler = () => {
+    removeBag(userContext.token, singleBag.bag_id).then((res) => {
+      if (res.ok) {
+        const oldBags = JSON.parse(localStorage.getItem('bags'));
+        const newBags = oldBags.filter((bags) => bags !== singleBag.bag_id);
+        localStorage.setItem('bags', JSON.stringify(newBags));
+        setOwnedBags(newBags);
+      } else {
+        console.log(res);
+      }
+    });
+  };
 
   useEffect(() => {
     getBagById(id)
@@ -37,6 +79,17 @@ const BagPage = () => {
           <br />
           <h4>Description:</h4>
           <p>{singleBag.description}</p>
+          <div className="d-grid gap-2">
+            {ownedBags.includes(singleBag.bag_id) ? (
+              <Button onClick={btnRemoveHandler} variant="secondary">
+                Remove from collection
+              </Button>
+            ) : (
+              <Button onClick={btnAddHandler} variant="primary">
+                Add to collection
+              </Button>
+            )}
+          </div>
         </Col>
       </Row>
     </Container>
