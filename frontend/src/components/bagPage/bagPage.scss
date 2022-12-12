@@ -16,4 +16,42 @@
         font-size: 19px;
         display: inline-block;
     }
+    button {
+        display: block;
+        border-radius: 0;
+        font-family: $fontSubHeader;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+    .btn-primary {
+        background-color: $colorMauve;
+        color: $colorDarkGray;
+        border: 1px solid $colorDarkGray;
+        &:hover {
+            background-color: $colorDarkMauve;
+            color: $colorDarkGray;
+            border: 1px solid $colorDarkGray;
+        }
+        &:focus {
+            outline: none !important;
+            box-shadow: none !important;
+            background-color: $colorDarkMauve;
+        }
+    }
+    .btn-secondary {
+        background-color: $colorLightGray;
+        color: $colorDarkGray;
+        border: 1px solid $colorDarkGray;
+        &:hover {
+            background-color: $colorGray;
+            color: $colorDarkGray;
+            border: 1px solid $colorDarkGray;
+        }
+        &:focus {
+            outline: none !important;
+            box-shadow: none !important;
+            background-color: $colorGray;
+        }
+    }
 }

@@ -54,6 +54,8 @@ const NavbarMenu = () => {
     logoutUser(userContext.token).then(async (response) => {
       if (response.ok) {
         setUserContext((oldValues) => {
+          localStorage.clear();
+          window.location.reload(false);
           return { ...oldValues, details: undefined, token: null };
         });
       } else {
