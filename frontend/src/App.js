@@ -1,4 +1,4 @@
-import './App.scss';
+import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import HomePage from './components/homePage/homePage';
@@ -7,12 +7,14 @@ import BagsPage from './components/bagsPage/bagsPage';
 import BagPage from './components/bagPage/bagPage';
 import LoginPage from './components/loginPage/loginPage';
 import RegistrationPage from './components/registrationPage/registrationPage';
+import Footer from './components/Footer/Footer';
+import './App.scss';
 
 function App() {
   return (
     <div>
-      <header>
-        <Navbar />
+      <Navbar />
+      <div id="content">
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />}></Route>
@@ -23,7 +25,8 @@ function App() {
             <Route path="/register" element={<RegistrationPage />}></Route>
           </Routes>
         </BrowserRouter>
-      </header>
+      </div>
+      <Footer />
     </div>
   );
 }

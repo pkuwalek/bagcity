@@ -67,7 +67,7 @@ const NavbarMenu = () => {
   };
 
   return (
-    <Navbar bg="light" expand="lg" sticky="top">
+    <Navbar expand="lg" sticky="top">
       <Container>
         <Navbar.Brand href="/">Bagcity</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
