@@ -99,6 +99,7 @@ const BagsPage = () => {
           {currentBags && currentBags.map((response) => <BagCard key={response.bag_id} bags={response} />)}
         </Row>
       </Container>
+      <ScrollButton />
       {currentBagsCount + bagOffset <= allBags.length ? (
         <button onClick={loadMore}>Load more bags</button>
       ) : (
