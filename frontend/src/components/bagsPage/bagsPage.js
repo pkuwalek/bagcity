@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import ReactPaginate from 'react-paginate';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import { getAllBags } from '../../sources/bags';
@@ -10,6 +11,10 @@ const BagsPage = () => {
   const [allBags, setAllBags] = useState([]);
   const [error, setError] = useState('');
   const [userContext, setUserContext] = useContext(UserContext);
+  const [currentBags, setCurrentBags] = useState(null);
+  const [pageCount, setPageCount] = useState(0);
+  const [bagOffset, setBagOffset] = useState(0);
+  const bagsPerPage = 16;
 
   useEffect(() => {
     getAllBags()
@@ -17,6 +22,17 @@ const BagsPage = () => {
       .then((response_json) => setAllBags(response_json))
       .catch(() => setError('Something went wrong, please try again later.'));
   }, []);
+
+  useEffect(() => {
+    const endOffset = bagOffset + bagsPerPage;
+    setCurrentBags(allBags.slice(bagOffset, endOffset));
+    setPageCount(Math.ceil(allBags.length / bagsPerPage));
+  }, [bagOffset, allBags]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * bagsPerPage) % allBags.length;
+    setBagOffset(newOffset);
+  };
 
   useEffect(() => {
     if (userContext.token) {
@@ -58,11 +74,29 @@ const BagsPage = () => {
     <>
       <Container>
         <Row xs={1} md={'auto'} className="g-4">
-          {allBags.map((response) => (
-            <BagCard key={response.bag_id} bags={response} />
-          ))}
+          {currentBags && currentBags.map((response) => <BagCard key={response.bag_id} bags={response} />)}
         </Row>
       </Container>
+      <ReactPaginate
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={3}
+        marginPagesDisplayed={2}
+        pageCount={pageCount}
+        previousLabel="< previous"
+        pageClassName="page-item"
+        pageLinkClassName="page-link"
+        previousClassName="page-item"
+        previousLinkClassName="page-link"
+        nextClassName="page-item"
+        nextLinkClassName="page-link"
+        breakLabel="..."
+        breakClassName="page-item"
+        breakLinkClassName="page-link"
+        containerClassName="pagination"
+        activeClassName="active"
+        renderOnZeroPageCount={null}
+      />
     </>
   );
 };
