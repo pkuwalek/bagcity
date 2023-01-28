@@ -15,7 +15,9 @@ const BagsPage = () => {
   const [pageCount, setPageCount] = useState(0);
   const [bagOffset, setBagOffset] = useState(0);
   const bagsPerPage = 16;
+  const [currentBagsCount, setCurrentBagsCount] = useState(bagsPerPage);
 
+  // get and set allBags
   useEffect(() => {
     getAllBags()
       .then((response) => response.json())
@@ -23,17 +25,20 @@ const BagsPage = () => {
       .catch(() => setError('Something went wrong, please try again later.'));
   }, []);
 
+  // pagination
   useEffect(() => {
-    const endOffset = bagOffset + bagsPerPage;
+    const endOffset = bagOffset + currentBagsCount;
     setCurrentBags(allBags.slice(bagOffset, endOffset));
     setPageCount(Math.ceil(allBags.length / bagsPerPage));
-  }, [bagOffset, allBags]);
+  }, [bagOffset, allBags, currentBagsCount]);
 
   const handlePageClick = (event) => {
+    setCurrentBagsCount(bagsPerPage);
     const newOffset = (event.selected * bagsPerPage) % allBags.length;
     setBagOffset(newOffset);
   };
 
+  // chceck if user is loggend in and get users info
   useEffect(() => {
     if (userContext.token) {
       getUserDetails(userContext.token).then(async (response) => {
@@ -51,6 +56,7 @@ const BagsPage = () => {
     }
   }, [userContext.token]);
 
+  // check if bag is owned by logged in user
   useEffect(() => {
     if (userContext.details) {
       getUsersBagsIds(userContext.details.user_id, userContext.token)
@@ -70,6 +76,10 @@ const BagsPage = () => {
     }
   }, [userContext.details]);
 
+  const loadMore = () => {
+    setCurrentBagsCount(currentBagsCount + bagsPerPage);
+  };
+
   return (
     <>
       <Container>
@@ -77,6 +87,7 @@ const BagsPage = () => {
           {currentBags && currentBags.map((response) => <BagCard key={response.bag_id} bags={response} />)}
         </Row>
       </Container>
+      <button onClick={loadMore}>Load more bags</button>
       <ReactPaginate
         nextLabel="next >"
         onPageChange={handlePageClick}
