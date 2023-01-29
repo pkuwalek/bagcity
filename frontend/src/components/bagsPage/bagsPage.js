@@ -89,6 +89,7 @@ const BagsPage = () => {
 
   const loadMore = () => {
     setCurrentBagsCount(currentBagsCount + bagsPerPage);
+    setActivePage(activePage + 1);
   };
 
   return (
