@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSquareArrowUp } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faSquareArrowUp } from '@fortawesome/free-solid-svg-icons';
 import Button from 'react-bootstrap/Button';
 import './ScrollButton.scss';
 
@@ -26,8 +26,9 @@ const ScrollButton = () => {
   window.addEventListener('scroll', toggleVisible);
 
   return (
-    <Button>
-      <FontAwesomeIcon icon="fa-sharp fa-solid fa-square-arrow-up" onClick={scrollToTop} />
+    <Button className="scroll-button" style={{ display: visible ? 'inline' : 'none' }} onClick={scrollToTop}>
+      To top
+      {/* <FontAwesomeIcon icon="fa-sharp fa-solid fa-square-arrow-up"  /> */}
       {/* <FaArrowCircleUp onClick={scrollToTop} style={{ display: visible ? 'inline' : 'none' }} /> */}
     </Button>
   );

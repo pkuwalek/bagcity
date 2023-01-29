@@ -6,6 +6,7 @@ import { getAllBags } from '../../sources/bags';
 import { getUserDetails, getUsersBagsIds } from '../../sources/users';
 import { UserContext } from '../../context/userContext';
 import BagCard from '../BagCard/BagCard';
+import ScrollButton from './ScrollButton/ScrollButton';
 
 const BagsPage = () => {
   const [allBags, setAllBags] = useState([]);
