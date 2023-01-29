@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
-import ReactPaginate from 'react-paginate';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
+import Pagination from 'react-bootstrap/Pagination';
 import { getAllBags } from '../../sources/bags';
 import { getUserDetails, getUsersBagsIds } from '../../sources/users';
 import { UserContext } from '../../context/userContext';
@@ -16,6 +16,7 @@ const BagsPage = () => {
   const [bagOffset, setBagOffset] = useState(0);
   const bagsPerPage = 16;
   const [currentBagsCount, setCurrentBagsCount] = useState(bagsPerPage);
+  const [activePage, setActivePage] = useState(0);
 
   // get and set allBags
   useEffect(() => {
@@ -32,13 +33,23 @@ const BagsPage = () => {
     setPageCount(Math.ceil(allBags.length / bagsPerPage));
   }, [bagOffset, allBags, currentBagsCount]);
 
-  const handlePageClick = (event) => {
+  const handlePageChange = (number) => {
     setCurrentBagsCount(bagsPerPage);
-    const newOffset = (event.selected * bagsPerPage) % allBags.length;
+    const newOffset = (number * bagsPerPage) % allBags.length;
     setBagOffset(newOffset);
+    setActivePage(number);
   };
 
-  // chceck if user is loggend in and get users info
+  const paginationItem = [];
+  for (let num = 0; num < pageCount; num += 1) {
+    paginationItem.push(
+      <Pagination.Item key={num} active={num === activePage} onClick={() => handlePageChange(num)}>
+        {num + 1}
+      </Pagination.Item>
+    );
+  }
+
+  // chceck if user is logged in and get users info
   useEffect(() => {
     if (userContext.token) {
       getUserDetails(userContext.token).then(async (response) => {
@@ -87,27 +98,28 @@ const BagsPage = () => {
           {currentBags && currentBags.map((response) => <BagCard key={response.bag_id} bags={response} />)}
         </Row>
       </Container>
-      <button onClick={loadMore}>Load more bags</button>
-      <ReactPaginate
-        nextLabel="next >"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={3}
-        marginPagesDisplayed={2}
-        pageCount={pageCount}
-        previousLabel="< previous"
-        pageClassName="page-item"
-        pageLinkClassName="page-link"
-        previousClassName="page-item"
-        previousLinkClassName="page-link"
-        nextClassName="page-item"
-        nextLinkClassName="page-link"
-        breakLabel="..."
-        breakClassName="page-item"
-        breakLinkClassName="page-link"
-        containerClassName="pagination"
-        activeClassName="active"
-        renderOnZeroPageCount={null}
-      />
+      {currentBagsCount + bagOffset <= allBags.length ? (
+        <button onClick={loadMore}>Load more bags</button>
+      ) : (
+        <h4>No more bags to load</h4>
+      )}
+      <Pagination>
+        <Pagination.Prev
+          onClick={() => {
+            if (activePage > 1) {
+              handlePageChange(activePage - 1);
+            }
+          }}
+        />
+        {paginationItem}
+        <Pagination.Next
+          onClick={() => {
+            if (activePage < pageCount) {
+              handlePageChange(activePage + 1);
+            }
+          }}
+        />
+      </Pagination>
     </>
   );
 };
