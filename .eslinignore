@@ -1,2 +1,4 @@
 node_modules
 bin
+src\dbUrl.js
+src\reportWebVitals.js

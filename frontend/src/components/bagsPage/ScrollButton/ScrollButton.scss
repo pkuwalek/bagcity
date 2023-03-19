@@ -1,10 +1,21 @@
+@import '../../../style.scss';
+
 .scroll-button {
     position: fixed; 
-    width: 5%;
-    left: 95%;
-    bottom: 40px;
-    height: 6%;
-    font-size: 12px;
+    width: 50px;
+    right: 2%;
+    bottom: 4%;
+    height: 50px;
     z-index: 1;
-    cursor: pointer;
+    border-radius: 50% !important;
+    background-color: $colorDarkMauve !important;
+    border-color: $colorDarkGray !important;
+    &:hover {
+        background-color: $colorMauve !important;
+    }
+    &:focus {
+        outline: none !important;
+        box-shadow: none !important;
+        background-color: $colorMauve !important;
+    }
 }
