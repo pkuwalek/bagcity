@@ -1,0 +1,20 @@
+@import '../../style.scss';
+
+.load-more-btn {
+    background-color: $colorMauve;
+    color: $colorDarkGray;
+    border: 1px solid $colorDarkGray;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    &:hover {
+        background-color: $colorDarkMauve;
+        color: $colorDarkGray;
+        border: 1px solid $colorDarkGray;
+    }
+    &:focus {
+        outline: none !important;
+        box-shadow: none !important;
+        background-color: $colorDarkMauve;
+    }
+}

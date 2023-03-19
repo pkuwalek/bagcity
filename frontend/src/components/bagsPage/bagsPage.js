@@ -7,6 +7,7 @@ import { getUserDetails, getUsersBagsIds } from '../../sources/users';
 import { UserContext } from '../../context/userContext';
 import BagCard from '../BagCard/BagCard';
 import ScrollButton from './ScrollButton/ScrollButton';
+import './bagsPage.scss';
 
 const BagsPage = () => {
   const [allBags, setAllBags] = useState([]);
@@ -102,7 +103,9 @@ const BagsPage = () => {
       </Container>
       <ScrollButton />
       {currentBagsCount + bagOffset <= allBags.length ? (
-        <button onClick={loadMore}>Load more bags</button>
+        <button className="load-more-btn" onClick={loadMore}>
+          Load more bags
+        </button>
       ) : (
         <h4>No more bags to load</h4>
       )}

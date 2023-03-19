@@ -1,8 +1,8 @@
 @import '../../style.scss';
 
 .card {
-    border-radius: 0;
-    border: 1px solid $colorDarkGray;
+    border-radius: 0 !important;
+    border: 1px solid $colorDarkGray !important;
     width: 18rem;
     .card-body {
         background-color: $colorVeryLightGray;
