@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Pagination from 'react-bootstrap/Pagination';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 import { getAllBags } from '../../sources/bags';
 import { getUserDetails, getUsersBagsIds } from '../../sources/users';
 import { UserContext } from '../../context/userContext';
@@ -19,6 +21,7 @@ const BagsPage = () => {
   const bagsPerPage = 16;
   const [currentBagsCount, setCurrentBagsCount] = useState(bagsPerPage);
   const [activePage, setActivePage] = useState(0);
+  const [rePaginate, setRePaginate] = useState(false);
 
   // get and set allBags
   useEffect(() => {
@@ -28,19 +31,20 @@ const BagsPage = () => {
       .catch(() => setError('Something went wrong, please try again later.'));
   }, []);
 
-  // pagination
-  useEffect(() => {
-    const endOffset = bagOffset + currentBagsCount;
-    setCurrentBags(allBags.slice(bagOffset, endOffset));
-    setPageCount(Math.ceil(allBags.length / bagsPerPage));
-  }, [bagOffset, allBags, currentBagsCount]);
-
   const handlePageChange = (number) => {
     setCurrentBagsCount(bagsPerPage);
     const newOffset = (number * bagsPerPage) % allBags.length;
     setBagOffset(newOffset);
     setActivePage(number);
   };
+
+  // pagination
+  useEffect(() => {
+    const endOffset = bagOffset + currentBagsCount;
+    setCurrentBags(allBags.slice(bagOffset, endOffset));
+    setPageCount(Math.ceil(allBags.length / bagsPerPage));
+    setRePaginate(false);
+  }, [bagOffset, currentBagsCount, allBags, rePaginate]);
 
   const paginationItem = [];
   for (let num = 0; num < pageCount; num += 1) {
@@ -50,6 +54,47 @@ const BagsPage = () => {
       </Pagination.Item>
     );
   }
+
+  // sort bags
+  const sortAToZ = (sortField) => {
+    if (['bag_name'].includes(sortField)) {
+      setAllBags(
+        allBags.sort((a, b) => {
+          const nameA = a[sortField].toUpperCase();
+          const nameB = b[sortField].toUpperCase();
+          if (nameA < nameB) {
+            return -1;
+          }
+          if (nameA > nameB) {
+            return 1;
+          }
+          // names must be equal
+          return 0;
+        })
+      );
+    } else if (['brand_name'].includes(sortField)) {
+      setAllBags(
+        allBags.sort((a, b) => {
+          const nameA = a.brands[sortField].toUpperCase();
+          const nameB = b.brands[sortField].toUpperCase();
+          if (nameA < nameB) {
+            return -1;
+          }
+          if (nameA > nameB) {
+            return 1;
+          }
+          // names must be equal
+          return 0;
+        })
+      );
+    } else if (['priceAsc'].includes(sortField)) {
+      setAllBags(allBags.sort((a, b) => a.price - b.price));
+    } else if (['priceDesc'].includes(sortField)) {
+      setAllBags(allBags.sort((a, b) => b.price - a.price));
+    }
+    handlePageChange(0);
+    setRePaginate(true);
+  };
 
   // chceck if user is logged in and get users info
   useEffect(() => {
@@ -97,6 +142,20 @@ const BagsPage = () => {
   return (
     <>
       <Container>
+        <DropdownButton id="dropdown-item-button" title="Sort" onSelect={sortAToZ}>
+          <Dropdown.Item as="button" eventKey="bag_name">
+            bag name
+          </Dropdown.Item>
+          <Dropdown.Item as="button" eventKey="brand_name">
+            brand name
+          </Dropdown.Item>
+          <Dropdown.Item as="button" eventKey="priceAsc">
+            price ascending
+          </Dropdown.Item>
+          <Dropdown.Item as="button" eventKey="priceDesc">
+            price descending
+          </Dropdown.Item>
+        </DropdownButton>
         <Row xs={1} md={'auto'} className="g-4">
           {currentBags && currentBags.map((response) => <BagCard key={response.bag_id} bags={response} />)}
         </Row>
