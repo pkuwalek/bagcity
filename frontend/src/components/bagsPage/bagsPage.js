@@ -4,15 +4,20 @@ import Row from 'react-bootstrap/Row';
 import Pagination from 'react-bootstrap/Pagination';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import { getAllBags } from '../../sources/bags';
+import Button from 'react-bootstrap/Button';
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import Accordion from 'react-bootstrap/Accordion';
+import { getAllBags, getColors } from '../../sources/bags';
 import { getUserDetails, getUsersBagsIds } from '../../sources/users';
 import { UserContext } from '../../context/userContext';
 import BagCard from '../BagCard/BagCard';
+import Checkbox from './Checkbox/Checkbox';
 import ScrollButton from './ScrollButton/ScrollButton';
 import './bagsPage.scss';
 
 const BagsPage = () => {
   const [allBags, setAllBags] = useState([]);
+  const [colors, setColors] = useState([]);
   const [error, setError] = useState('');
   const [userContext, setUserContext] = useContext(UserContext);
   const [currentBags, setCurrentBags] = useState(null);
@@ -22,12 +27,25 @@ const BagsPage = () => {
   const [currentBagsCount, setCurrentBagsCount] = useState(bagsPerPage);
   const [activePage, setActivePage] = useState(0);
   const [rePaginate, setRePaginate] = useState(false);
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
+
+  // toggle Offcanvas filter
+  const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  const handleShowOffcanvas = () => setShowOffcanvas(true);
 
   // get and set allBags
   useEffect(() => {
     getAllBags()
       .then((response) => response.json())
       .then((response_json) => setAllBags(response_json))
+      .catch(() => setError('Something went wrong, please try again later.'));
+  }, []);
+
+  // get available colors
+  useEffect(() => {
+    getColors()
+      .then((response) => response.json())
+      .then((response_json) => setColors(response_json))
       .catch(() => setError('Something went wrong, please try again later.'));
   }, []);
 
@@ -156,6 +174,33 @@ const BagsPage = () => {
             price descending
           </Dropdown.Item>
         </DropdownButton>
+        <Button variant="primary" onClick={handleShowOffcanvas}>
+          Filter
+        </Button>
+        <Offcanvas show={showOffcanvas} onHide={handleCloseOffcanvas}>
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Filter</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            <Accordion>
+              <Accordion.Item eventKey="0">
+                <Accordion.Header>Color</Accordion.Header>
+                <Accordion.Body>
+                  <Checkbox content={colors} />
+                  {/* {colors && colors.map((response) => <div> response.color_name</div>)} */}
+                </Accordion.Body>
+              </Accordion.Item>
+              <Accordion.Item eventKey="1">
+                <Accordion.Header>Brand</Accordion.Header>
+                <Accordion.Body>Lorem ipsum dolor sit amet,</Accordion.Body>
+              </Accordion.Item>
+              <Accordion.Item eventKey="2">
+                <Accordion.Header>Style</Accordion.Header>
+                <Accordion.Body>Lorem ipsum dolor sit amet,</Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
+          </Offcanvas.Body>
+        </Offcanvas>
         <Row xs={1} md={'auto'} className="g-4">
           {currentBags && currentBags.map((response) => <BagCard key={response.bag_id} bags={response} />)}
         </Row>

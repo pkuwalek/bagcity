@@ -13,3 +13,9 @@ export const getBagById = (id) => {
     method: 'GET',
   });
 };
+
+export const getColors = () => {
+  return fetch(`${urlBags}colors`, {
+    method: 'GET',
+  });
+};

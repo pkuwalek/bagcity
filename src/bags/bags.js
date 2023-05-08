@@ -20,6 +20,17 @@ router.get('/colors/:id', async (req, res) => {
   res.json(bagsOfSpecificColor);
 });
 
+router.get('/colors', async (req, res) => {
+  let colors = await prisma.colors.findMany();
+  colors = colors.map((item) => {
+    return {
+      id: item.color_id,
+      name: item.color_name,
+    };
+  });
+  res.json(colors);
+});
+
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   const bagById = await prisma.bags.findUnique({
