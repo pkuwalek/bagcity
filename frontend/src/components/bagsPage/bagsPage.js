@@ -203,26 +203,26 @@ const BagsPage = () => {
         </Button>
         <Offcanvas show={showOffcanvas} onHide={handleCloseOffcanvas}>
           <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Filter</Offcanvas.Title>
+            <Offcanvas.Title>Filter by</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Accordion>
               <Accordion.Item eventKey="0">
                 <Accordion.Header>Color</Accordion.Header>
                 <Accordion.Body>
-                  <Checkbox content={colors} />
+                  <Checkbox key="colorCheckbox" content={colors} name="color" />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="1">
                 <Accordion.Header>Brand</Accordion.Header>
                 <Accordion.Body>
-                  <Checkbox content={brands} />
+                  <Checkbox key="brandCheckbox" content={brands} name="brand" />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="2">
                 <Accordion.Header>Style</Accordion.Header>
                 <Accordion.Body>
-                  <Checkbox content={styles} />
+                  <Checkbox key="styleCheckbox" content={styles} name="style" />
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
