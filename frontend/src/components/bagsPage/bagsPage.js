@@ -7,7 +7,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Accordion from 'react-bootstrap/Accordion';
-import { getAllBags, getColors } from '../../sources/bags';
+import { getAllBags, getColors, getBrands, getStyles } from '../../sources/bags';
 import { getUserDetails, getUsersBagsIds } from '../../sources/users';
 import { UserContext } from '../../context/userContext';
 import BagCard from '../BagCard/BagCard';
@@ -18,6 +18,8 @@ import './bagsPage.scss';
 const BagsPage = () => {
   const [allBags, setAllBags] = useState([]);
   const [colors, setColors] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [styles, setStyles] = useState([]);
   const [error, setError] = useState('');
   const [userContext, setUserContext] = useContext(UserContext);
   const [currentBags, setCurrentBags] = useState(null);
@@ -45,7 +47,29 @@ const BagsPage = () => {
   useEffect(() => {
     getColors()
       .then((response) => response.json())
-      .then((response_json) => setColors(response_json))
+      .then((response_json) => {
+        setColors(response_json);
+      })
+      .catch(() => setError('Something went wrong, please try again later.'));
+  }, []);
+
+  // get available brands
+  useEffect(() => {
+    getBrands()
+      .then((response) => response.json())
+      .then((response_json) => {
+        setBrands(response_json);
+      })
+      .catch(() => setError('Something went wrong, please try again later.'));
+  }, []);
+
+  // get available styles
+  useEffect(() => {
+    getStyles()
+      .then((response) => response.json())
+      .then((response_json) => {
+        setStyles(response_json);
+      })
       .catch(() => setError('Something went wrong, please try again later.'));
   }, []);
 
@@ -187,16 +211,19 @@ const BagsPage = () => {
                 <Accordion.Header>Color</Accordion.Header>
                 <Accordion.Body>
                   <Checkbox content={colors} />
-                  {/* {colors && colors.map((response) => <div> response.color_name</div>)} */}
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="1">
                 <Accordion.Header>Brand</Accordion.Header>
-                <Accordion.Body>Lorem ipsum dolor sit amet,</Accordion.Body>
+                <Accordion.Body>
+                  <Checkbox content={brands} />
+                </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="2">
                 <Accordion.Header>Style</Accordion.Header>
-                <Accordion.Body>Lorem ipsum dolor sit amet,</Accordion.Body>
+                <Accordion.Body>
+                  <Checkbox content={styles} />
+                </Accordion.Body>
               </Accordion.Item>
             </Accordion>
           </Offcanvas.Body>
