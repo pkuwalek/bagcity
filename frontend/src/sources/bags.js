@@ -19,3 +19,15 @@ export const getColors = () => {
     method: 'GET',
   });
 };
+
+export const getBrands = () => {
+  return fetch(`${urlBags}brands`, {
+    method: 'GET',
+  });
+};
+
+export const getStyles = () => {
+  return fetch(`${urlBags}types`, {
+    method: 'GET',
+  });
+};

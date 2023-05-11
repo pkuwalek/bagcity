@@ -31,6 +31,28 @@ router.get('/colors', async (req, res) => {
   res.json(colors);
 });
 
+router.get('/brands', async (req, res) => {
+  let brands = await prisma.brands.findMany();
+  brands = brands.map((item) => {
+    return {
+      id: item.brand_id,
+      name: item.brand_name,
+    };
+  });
+  res.json(brands);
+});
+
+router.get('/types', async (req, res) => {
+  let types = await prisma.types.findMany();
+  types = types.map((item) => {
+    return {
+      id: item.type_id,
+      name: item.type_name,
+    };
+  });
+  res.json(types);
+});
+
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   const bagById = await prisma.bags.findUnique({
