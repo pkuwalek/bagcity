@@ -11,6 +11,17 @@ router.get('/', async (req, res) => {
   res.json(bags);
 });
 
+router.get('/filter', async (req, res) => {
+  const { color_id } = req.body;
+  const filteredBags = await prisma.bags.findMany({
+    where: {
+      color_id: { in: color_id },
+    },
+    include: { colors: true, brands: true, types: true },
+  });
+  res.json(filteredBags);
+});
+
 router.get('/colors/:id', async (req, res) => {
   const { id } = req.params;
   const bagsOfSpecificColor = await prisma.colors.findUnique({
