@@ -3,10 +3,11 @@ import ToggleButton from 'react-bootstrap/ToggleButton';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import './checkbox.scss';
 
-const Checkbox = ({ content, name }) => {
+const Checkbox = ({ content, name, callback }) => {
   const [value, setValue] = useState([]);
   const handleChange = (val) => {
     setValue(val);
+    callback(val);
     console.log(val);
   };
 

@@ -7,7 +7,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Accordion from 'react-bootstrap/Accordion';
-import { getAllBags, getColors, getBrands, getStyles } from '../../sources/bags';
+import { getAllBags, getColors, getBrands, getStyles, filteredBags } from '../../sources/bags';
 import { getUserDetails, getUsersBagsIds } from '../../sources/users';
 import { UserContext } from '../../context/userContext';
 import BagCard from '../BagCard/BagCard';
@@ -30,6 +30,9 @@ const BagsPage = () => {
   const [activePage, setActivePage] = useState(0);
   const [rePaginate, setRePaginate] = useState(false);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const [colorIds, setColorIds] = useState([]);
+  const [brandIds, setBrandIds] = useState([]);
+  const [styleIds, setStyleIds] = useState([]);
 
   // toggle Offcanvas filter
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
@@ -96,6 +99,13 @@ const BagsPage = () => {
       </Pagination.Item>
     );
   }
+
+  // filter bags
+  const filterBags = () => {
+    // pobrac id filtrow z checkboxa
+    // przekazac do filteredBags
+    // zapisac do setAllBags wyniki
+  };
 
   // sort bags
   const sortAToZ = (sortField) => {
@@ -210,22 +220,23 @@ const BagsPage = () => {
               <Accordion.Item eventKey="0">
                 <Accordion.Header>Color</Accordion.Header>
                 <Accordion.Body>
-                  <Checkbox key="colorCheckbox" content={colors} name="color" />
+                  <Checkbox content={colors} name="color" callback={setColorIds} />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="1">
                 <Accordion.Header>Brand</Accordion.Header>
                 <Accordion.Body>
-                  <Checkbox key="brandCheckbox" content={brands} name="brand" />
+                  <Checkbox content={brands} name="brand" callback={setBrandIds} />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="2">
                 <Accordion.Header>Style</Accordion.Header>
                 <Accordion.Body>
-                  <Checkbox key="styleCheckbox" content={styles} name="style" />
+                  <Checkbox content={styles} name="style" callback={setStyleIds} />
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
+            <Button onClick={() => console.log(colorIds, brandIds, styleIds)}>Filter</Button>
           </Offcanvas.Body>
         </Offcanvas>
         <Row xs={1} md={'auto'} className="g-4">
