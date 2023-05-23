@@ -12,12 +12,12 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/filter', async (req, res) => {
-  const { color_id, brand_id, type_id } = req.body;
+  const { colorIds, brandIds, styleIds } = req.body;
   const filteredBags = await prisma.bags.findMany({
     where: {
-      color_id: { in: color_id.length ? color_id : undefined },
-      brand_id: { in: brand_id.length ? brand_id : undefined },
-      type_id: { in: type_id.length ? type_id : undefined },
+      color_id: { in: colorIds.length ? colorIds : undefined },
+      brand_id: { in: brandIds.length ? brandIds : undefined },
+      type_id: { in: styleIds.length ? styleIds : undefined },
     },
     include: { colors: true, brands: true, types: true },
   });
