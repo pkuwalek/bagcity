@@ -102,9 +102,11 @@ const BagsPage = () => {
 
   // filter bags
   const filterBags = () => {
-    // pobrac id filtrow z checkboxa
-    // przekazac do filteredBags
-    // zapisac do setAllBags wyniki
+    const filterCriteria = { colorIds, brandIds, styleIds };
+    filteredBags(filterCriteria)
+      .then((response) => response.json())
+      .then((response_json) => setAllBags(response_json))
+      .catch(() => setError('Something went wrong, please try again later.'));
   };
 
   // sort bags
@@ -236,7 +238,7 @@ const BagsPage = () => {
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
-            <Button onClick={() => console.log(colorIds, brandIds, styleIds)}>Filter</Button>
+            <Button onClick={filterBags}>Filter</Button>
           </Offcanvas.Body>
         </Offcanvas>
         <Row xs={1} md={'auto'} className="g-4">

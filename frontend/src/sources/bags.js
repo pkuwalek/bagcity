@@ -31,3 +31,11 @@ export const getStyles = () => {
     method: 'GET',
   });
 };
+
+export const filteredBags = (data) => {
+  return fetch(`${urlBags}filter`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+};
