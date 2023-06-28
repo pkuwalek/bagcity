@@ -38,6 +38,26 @@ const BagsPage = () => {
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
   const handleShowOffcanvas = () => setShowOffcanvas(true);
 
+  // check if bag is owned by logged in user
+  const markUsersBags = () => {
+    if (userContext.details) {
+      getUsersBagsIds(userContext.details.user_id, userContext.token)
+        .then((response) => response.json())
+        .then((response_json) => {
+          const usersBags = response_json.map((bag) => bag.bag_id);
+          setAllBags(
+            allBags.map((bag) => {
+              if (usersBags.includes(bag.bag_id)) {
+                return { ...bag, owned: true };
+              }
+              return { ...bag, owned: false };
+            })
+          );
+        })
+        .catch((e) => setError(e));
+    }
+  };
+
   // get and set allBags
   useEffect(() => {
     getAllBags()
@@ -106,7 +126,19 @@ const BagsPage = () => {
     filteredBags(filterCriteria)
       .then((response) => response.json())
       .then((response_json) => setAllBags(response_json))
+      .then(() => markUsersBags())
       .catch(() => setError('Something went wrong, please try again later.'));
+    setShowOffcanvas(false);
+  };
+
+  // remove all filters
+  const removeFilters = () => {
+    getAllBags()
+      .then((response) => response.json())
+      .then((response_json) => setAllBags(response_json))
+      .then(() => markUsersBags())
+      .catch(() => setError('Something went wrong, please try again later.'));
+    setShowOffcanvas(false);
   };
 
   // sort bags
@@ -168,24 +200,8 @@ const BagsPage = () => {
     }
   }, [userContext.token]);
 
-  // check if bag is owned by logged in user
   useEffect(() => {
-    if (userContext.details) {
-      getUsersBagsIds(userContext.details.user_id, userContext.token)
-        .then((response) => response.json())
-        .then((response_json) => {
-          const usersBags = response_json.map((bag) => bag.bag_id);
-          setAllBags(
-            allBags.map((bag) => {
-              if (usersBags.includes(bag.bag_id)) {
-                return { ...bag, owned: true };
-              }
-              return { ...bag, owned: false };
-            })
-          );
-        })
-        .catch((e) => setError(e));
-    }
+    markUsersBags();
   }, [userContext.details]);
 
   const loadMore = () => {
@@ -239,6 +255,7 @@ const BagsPage = () => {
               </Accordion.Item>
             </Accordion>
             <Button onClick={filterBags}>Filter</Button>
+            <Button onClick={removeFilters}>Remove all filters</Button>
           </Offcanvas.Body>
         </Offcanvas>
         <Row xs={1} md={'auto'} className="g-4">
