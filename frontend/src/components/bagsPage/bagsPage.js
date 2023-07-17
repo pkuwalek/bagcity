@@ -39,23 +39,26 @@ const BagsPage = () => {
   const handleShowOffcanvas = () => setShowOffcanvas(true);
 
   // check if bag is owned by logged in user
-  const markUsersBags = () => {
+  const markUsersBags = (bags) => {
     if (userContext.details) {
-      getUsersBagsIds(userContext.details.user_id, userContext.token)
+      return getUsersBagsIds(userContext.details.user_id, userContext.token)
         .then((response) => response.json())
         .then((response_json) => {
           const usersBags = response_json.map((bag) => bag.bag_id);
-          setAllBags(
-            allBags.map((bag) => {
-              if (usersBags.includes(bag.bag_id)) {
-                return { ...bag, owned: true };
-              }
-              return { ...bag, owned: false };
-            })
-          );
+          // setAllBags(
+          return bags.map((bag) => {
+            if (usersBags.includes(bag.bag_id)) {
+              return { ...bag, owned: true };
+            }
+            return { ...bag, owned: false };
+          });
+          // );
         })
         .catch((e) => setError(e));
     }
+    return new Promise((resolve, reject) => {
+      resolve(bags);
+    });
   };
 
   // get and set allBags
@@ -105,10 +108,12 @@ const BagsPage = () => {
 
   // pagination
   useEffect(() => {
-    const endOffset = bagOffset + currentBagsCount;
-    setCurrentBags(allBags.slice(bagOffset, endOffset));
-    setPageCount(Math.ceil(allBags.length / bagsPerPage));
-    setRePaginate(false);
+    if (allBags.length) {
+      const endOffset = bagOffset + currentBagsCount;
+      setCurrentBags(allBags.slice(bagOffset, endOffset));
+      setPageCount(Math.ceil(allBags.length / bagsPerPage));
+      setRePaginate(false);
+    }
   }, [bagOffset, currentBagsCount, allBags, rePaginate]);
 
   const paginationItem = [];
@@ -125,8 +130,8 @@ const BagsPage = () => {
     const filterCriteria = { colorIds, brandIds, styleIds };
     filteredBags(filterCriteria)
       .then((response) => response.json())
-      .then((response_json) => setAllBags(response_json))
-      .then(() => markUsersBags())
+      .then((response_json) => markUsersBags(response_json).then((markedBags) => setAllBags(markedBags)))
+      // .then(() => markUsersBags())
       .catch(() => setError('Something went wrong, please try again later.'));
     setShowOffcanvas(false);
   };
@@ -135,8 +140,8 @@ const BagsPage = () => {
   const removeFilters = () => {
     getAllBags()
       .then((response) => response.json())
-      .then((response_json) => setAllBags(response_json))
-      .then(() => markUsersBags())
+      .then((response_json) => markUsersBags(response_json).then((markedBags) => setAllBags(markedBags)))
+      // .then(() => markUsersBags())
       .catch(() => setError('Something went wrong, please try again later.'));
     setShowOffcanvas(false);
   };
@@ -201,13 +206,20 @@ const BagsPage = () => {
   }, [userContext.token]);
 
   useEffect(() => {
-    markUsersBags();
+    markUsersBags(allBags).then((markedBags) => setAllBags(markedBags));
   }, [userContext.details]);
 
   const loadMore = () => {
     setCurrentBagsCount(currentBagsCount + bagsPerPage);
     setActivePage(activePage + 1);
   };
+
+  useEffect(() => {
+    if (error) {
+      // eslint-disable-next-line no-alert
+      alert(error);
+    }
+  }, [error]);
 
   return (
     <>
@@ -238,19 +250,19 @@ const BagsPage = () => {
               <Accordion.Item eventKey="0">
                 <Accordion.Header>Color</Accordion.Header>
                 <Accordion.Body>
-                  <Checkbox content={colors} name="color" callback={setColorIds} />
+                  <Checkbox content={colors} name="color" currentValue={colorIds} valueSetter={setColorIds} />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="1">
                 <Accordion.Header>Brand</Accordion.Header>
                 <Accordion.Body>
-                  <Checkbox content={brands} name="brand" callback={setBrandIds} />
+                  <Checkbox content={brands} name="brand" currentValue={brandIds} valueSetter={setBrandIds} />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="2">
                 <Accordion.Header>Style</Accordion.Header>
                 <Accordion.Body>
-                  <Checkbox content={styles} name="style" callback={setStyleIds} />
+                  <Checkbox content={styles} name="style" currentValue={styleIds} valueSetter={setStyleIds} />
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
