@@ -1,0 +1,24 @@
+@import '../../style.scss';
+
+.container {
+    button {
+    border-radius: 0;
+    font-family: $fontSubHeader;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background-color: $colorMauve;
+    color: $colorDarkGray;
+    border: 1px solid $colorDarkGray;
+    &:hover {
+        background-color: $colorDarkMauve;
+        color: $colorDarkGray;
+        border: 1px solid $colorDarkGray;
+    }
+    &:focus {
+        outline: none !important;
+        box-shadow: none !important;
+        background-color: $colorDarkMauve;
+    }
+    }   
+}

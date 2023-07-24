@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import './loginPage.scss';
@@ -53,19 +54,21 @@ const LoginPage = () => {
     <>
       {error !== '' ? <ErrorAlert error={error} /> : ''}
       <h2>Login</h2>
-      <Form onSubmit={formik.handleSubmit}>
-        <FloatingLabel label="Email address" className="mb-3">
-          <Form.Control id="email" type="email" placeholder="name@example.com" {...formik.getFieldProps('email')} />
-          {formik.touched.email && formik.errors.email ? <div>{formik.errors.email}</div> : null}
-        </FloatingLabel>
-        <FloatingLabel label="Password" className="mb-3">
-          <Form.Control id="password" type="password" placeholder="Password" {...formik.getFieldProps('password')} />
-          {formik.touched.password && formik.errors.password ? <div>{formik.errors.password}</div> : null}
-        </FloatingLabel>
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
-      </Form>
+      <Container md={{ span: 6, offset: 3 }}>
+        <Form onSubmit={formik.handleSubmit}>
+          <FloatingLabel label="Email address" className="mb-3">
+            <Form.Control id="email" type="email" placeholder="name@example.com" {...formik.getFieldProps('email')} />
+            {formik.touched.email && formik.errors.email ? <div>{formik.errors.email}</div> : null}
+          </FloatingLabel>
+          <FloatingLabel label="Password" className="mb-3">
+            <Form.Control id="password" type="password" placeholder="Password" {...formik.getFieldProps('password')} />
+            {formik.touched.password && formik.errors.password ? <div>{formik.errors.password}</div> : null}
+          </FloatingLabel>
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Form>
+      </Container>
     </>
   );
 };
